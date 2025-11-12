@@ -1,0 +1,529 @@
+2025-11-11 13:50:43,290 - evaluator - INFO - SacreBLEU initialized successfully
+2025-11-11 13:50:43,318 - absl - INFO - Using default tokenizer.
+2025-11-11 13:50:43,318 - evaluator - INFO - ROUGE scorer initialized successfully
+2025-11-11 13:50:43,318 - evaluator - INFO - Evaluator initialized - BLEU: True, ROUGE: True, BERTScore: False, LLM Judge: False
+2025-11-11 13:50:43,319 - RAGExperiment - INFO - ================================================================================
+2025-11-11 13:50:43,319 - RAGExperiment - INFO - INITIALIZING RAG EXPERIMENT: CLOSED_BOOK
+2025-11-11 13:50:43,319 - RAGExperiment - INFO - ================================================================================
+2025-11-11 13:50:43,319 - RAGExperiment - INFO - Configuration:
+2025-11-11 13:50:43,319 - RAGExperiment - INFO -   Experiment Type: closed_book
+2025-11-11 13:50:43,319 - RAGExperiment - INFO -   LLM Model: meta-llama/Llama-3.2-3B-Instruct
+2025-11-11 13:50:43,319 - RAGExperiment - INFO -   Judge Model: Disabled
+2025-11-11 13:50:43,319 - RAGExperiment - INFO -   Device: cuda
+2025-11-11 13:50:43,319 - RAGExperiment - INFO -   8-bit Loading: True
+2025-11-11 13:50:43,319 - RAGExperiment - INFO -   Chunk Size: 512
+2025-11-11 13:50:43,319 - RAGExperiment - INFO -   Chunk Overlap: 50
+2025-11-11 13:50:43,319 - RAGExperiment - INFO -   Top-K Retrieval: 3
+2025-11-11 13:50:43,319 - RAGExperiment - INFO -   Embedding Model: sentence-transformers/all-MiniLM-L6-v2
+2025-11-11 13:50:43,319 - RAGExperiment - INFO -   Max New Tokens: 256
+2025-11-11 13:50:43,319 - RAGExperiment - INFO -   Using LangChain + FAISS + HuggingFace LLMs
+2025-11-11 13:50:43,319 - RAGExperiment - INFO - ================================================================================
+2025-11-11 13:50:43,319 - RAGExperiment - INFO - 
+Initializing LangChain components...
+2025-11-11 13:50:43,319 - RAGExperiment - INFO - Loading embeddings: sentence-transformers/all-MiniLM-L6-v2
+2025-11-11 13:50:43,321 - sentence_transformers.SentenceTransformer - INFO - Load pretrained SentenceTransformer: sentence-transformers/all-MiniLM-L6-v2
+2025-11-11 13:50:43,324 - urllib3.connectionpool - DEBUG - Starting new HTTPS connection (1): huggingface.co:443
+2025-11-11 13:50:43,932 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "HEAD /sentence-transformers/all-MiniLM-L6-v2/resolve/main/modules.json HTTP/1.1" 307 0
+2025-11-11 13:50:44,083 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "HEAD /api/resolve-cache/models/sentence-transformers/all-MiniLM-L6-v2/c9745ed1d9f207416be6d2e6f8de32d1f16199bf/modules.json HTTP/1.1" 200 0
+2025-11-11 13:50:44,390 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "HEAD /sentence-transformers/all-MiniLM-L6-v2/resolve/main/config_sentence_transformers.json HTTP/1.1" 307 0
+2025-11-11 13:50:44,541 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "HEAD /api/resolve-cache/models/sentence-transformers/all-MiniLM-L6-v2/c9745ed1d9f207416be6d2e6f8de32d1f16199bf/config_sentence_transformers.json HTTP/1.1" 200 0
+2025-11-11 13:50:44,850 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "HEAD /sentence-transformers/all-MiniLM-L6-v2/resolve/main/config_sentence_transformers.json HTTP/1.1" 307 0
+2025-11-11 13:50:45,012 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "HEAD /api/resolve-cache/models/sentence-transformers/all-MiniLM-L6-v2/c9745ed1d9f207416be6d2e6f8de32d1f16199bf/config_sentence_transformers.json HTTP/1.1" 200 0
+2025-11-11 13:50:45,321 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "HEAD /sentence-transformers/all-MiniLM-L6-v2/resolve/main/README.md HTTP/1.1" 307 0
+2025-11-11 13:50:45,471 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "HEAD /api/resolve-cache/models/sentence-transformers/all-MiniLM-L6-v2/c9745ed1d9f207416be6d2e6f8de32d1f16199bf/README.md HTTP/1.1" 200 0
+2025-11-11 13:50:45,777 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "HEAD /sentence-transformers/all-MiniLM-L6-v2/resolve/main/modules.json HTTP/1.1" 307 0
+2025-11-11 13:50:45,929 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "HEAD /api/resolve-cache/models/sentence-transformers/all-MiniLM-L6-v2/c9745ed1d9f207416be6d2e6f8de32d1f16199bf/modules.json HTTP/1.1" 200 0
+2025-11-11 13:50:46,238 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "HEAD /sentence-transformers/all-MiniLM-L6-v2/resolve/main/sentence_bert_config.json HTTP/1.1" 307 0
+2025-11-11 13:50:46,389 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "HEAD /api/resolve-cache/models/sentence-transformers/all-MiniLM-L6-v2/c9745ed1d9f207416be6d2e6f8de32d1f16199bf/sentence_bert_config.json HTTP/1.1" 200 0
+2025-11-11 13:50:46,701 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "HEAD /sentence-transformers/all-MiniLM-L6-v2/resolve/main/adapter_config.json HTTP/1.1" 404 0
+2025-11-11 13:50:47,011 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "HEAD /sentence-transformers/all-MiniLM-L6-v2/resolve/main/config.json HTTP/1.1" 307 0
+2025-11-11 13:50:47,162 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "HEAD /api/resolve-cache/models/sentence-transformers/all-MiniLM-L6-v2/c9745ed1d9f207416be6d2e6f8de32d1f16199bf/config.json HTTP/1.1" 200 0
+2025-11-11 13:50:47,510 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "HEAD /sentence-transformers/all-MiniLM-L6-v2/resolve/main/tokenizer_config.json HTTP/1.1" 307 0
+2025-11-11 13:50:47,661 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "HEAD /api/resolve-cache/models/sentence-transformers/all-MiniLM-L6-v2/c9745ed1d9f207416be6d2e6f8de32d1f16199bf/tokenizer_config.json HTTP/1.1" 200 0
+2025-11-11 13:50:47,982 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "GET /api/models/sentence-transformers/all-MiniLM-L6-v2/tree/main/additional_chat_templates?recursive=False&expand=False HTTP/1.1" 404 64
+2025-11-11 13:50:48,315 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "HEAD /sentence-transformers/all-MiniLM-L6-v2/resolve/main/1_Pooling/config.json HTTP/1.1" 307 0
+2025-11-11 13:50:48,471 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "HEAD /api/resolve-cache/models/sentence-transformers/all-MiniLM-L6-v2/c9745ed1d9f207416be6d2e6f8de32d1f16199bf/1_Pooling%2Fconfig.json HTTP/1.1" 200 0
+2025-11-11 13:50:48,792 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "GET /api/models/sentence-transformers/all-MiniLM-L6-v2 HTTP/1.1" 200 6891
+2025-11-11 13:50:48,891 - RAGExperiment - INFO - ✓ Embeddings loaded
+2025-11-11 13:50:48,891 - RAGExperiment - INFO - ✓ Text splitter initialized (chunk_size=512, overlap=50)
+2025-11-11 13:50:48,891 - RAGExperiment - INFO - 
+================================================================================
+2025-11-11 13:50:48,891 - RAGExperiment - INFO - STARTING EXPERIMENT
+2025-11-11 13:50:48,891 - RAGExperiment - INFO - ================================================================================
+2025-11-11 13:50:48,891 - data_loader - INFO - Loading FinanceBench dataset: PatronusAI/financebench, split: train
+2025-11-11 13:50:49,207 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "HEAD /datasets/PatronusAI/financebench/resolve/main/README.md HTTP/1.1" 307 0
+2025-11-11 13:50:49,358 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "HEAD /api/resolve-cache/datasets/PatronusAI/financebench/e04404e3a97f69f79c14d42f24981a1c9c3bcd18/README.md HTTP/1.1" 200 0
+2025-11-11 13:50:49,670 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "HEAD /datasets/PatronusAI/financebench/resolve/e04404e3a97f69f79c14d42f24981a1c9c3bcd18/financebench.py HTTP/1.1" 404 0
+2025-11-11 13:50:49,674 - urllib3.connectionpool - DEBUG - Starting new HTTPS connection (1): s3.amazonaws.com:443
+2025-11-11 13:50:49,749 - urllib3.connectionpool - DEBUG - https://s3.amazonaws.com:443 "HEAD /datasets.huggingface.co/datasets/datasets/PatronusAI/financebench/PatronusAI/financebench.py HTTP/1.1" 404 0
+2025-11-11 13:50:50,054 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "GET /api/datasets/PatronusAI/financebench/revision/e04404e3a97f69f79c14d42f24981a1c9c3bcd18 HTTP/1.1" 200 1293
+2025-11-11 13:50:50,375 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "HEAD /datasets/PatronusAI/financebench/resolve/e04404e3a97f69f79c14d42f24981a1c9c3bcd18/.huggingface.yaml HTTP/1.1" 404 0
+2025-11-11 13:50:50,379 - urllib3.connectionpool - DEBUG - Starting new HTTPS connection (1): datasets-server.huggingface.co:443
+2025-11-11 13:50:50,509 - urllib3.connectionpool - DEBUG - https://datasets-server.huggingface.co:443 "GET /info?dataset=PatronusAI/financebench HTTP/1.1" 200 None
+2025-11-11 13:50:50,819 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "GET /api/datasets/PatronusAI/financebench/tree/e04404e3a97f69f79c14d42f24981a1c9c3bcd18/data?recursive=True&expand=False HTTP/1.1" 404 79
+2025-11-11 13:50:51,135 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "GET /api/datasets/PatronusAI/financebench/tree/e04404e3a97f69f79c14d42f24981a1c9c3bcd18?recursive=False&expand=False HTTP/1.1" 200 312
+2025-11-11 13:50:51,451 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "HEAD /datasets/PatronusAI/financebench/resolve/e04404e3a97f69f79c14d42f24981a1c9c3bcd18/dataset_infos.json HTTP/1.1" 404 0
+2025-11-11 13:50:51,456 - filelock - DEBUG - Attempting to acquire lock 139665741213584 on /u/kobeissa/.cache/huggingface/datasets/_u_kobeissa_.cache_huggingface_datasets_PatronusAI___financebench_default_0.0.0_e04404e3a97f69f79c14d42f24981a1c9c3bcd18.lock
+2025-11-11 13:50:51,458 - filelock - DEBUG - Lock 139665741213584 acquired on /u/kobeissa/.cache/huggingface/datasets/_u_kobeissa_.cache_huggingface_datasets_PatronusAI___financebench_default_0.0.0_e04404e3a97f69f79c14d42f24981a1c9c3bcd18.lock
+2025-11-11 13:50:51,459 - fsspec.local - DEBUG - open file: /u/kobeissa/.cache/huggingface/datasets/PatronusAI___financebench/default/0.0.0/e04404e3a97f69f79c14d42f24981a1c9c3bcd18/dataset_info.json
+2025-11-11 13:50:51,461 - filelock - DEBUG - Attempting to release lock 139665741213584 on /u/kobeissa/.cache/huggingface/datasets/_u_kobeissa_.cache_huggingface_datasets_PatronusAI___financebench_default_0.0.0_e04404e3a97f69f79c14d42f24981a1c9c3bcd18.lock
+2025-11-11 13:50:51,461 - filelock - DEBUG - Lock 139665741213584 released on /u/kobeissa/.cache/huggingface/datasets/_u_kobeissa_.cache_huggingface_datasets_PatronusAI___financebench_default_0.0.0_e04404e3a97f69f79c14d42f24981a1c9c3bcd18.lock
+2025-11-11 13:50:51,463 - filelock - DEBUG - Attempting to acquire lock 139665741808336 on /u/kobeissa/.cache/huggingface/datasets/PatronusAI___financebench/default/0.0.0/e04404e3a97f69f79c14d42f24981a1c9c3bcd18_builder.lock
+2025-11-11 13:50:51,465 - filelock - DEBUG - Lock 139665741808336 acquired on /u/kobeissa/.cache/huggingface/datasets/PatronusAI___financebench/default/0.0.0/e04404e3a97f69f79c14d42f24981a1c9c3bcd18_builder.lock
+2025-11-11 13:50:51,465 - fsspec.local - DEBUG - open file: /u/kobeissa/.cache/huggingface/datasets/PatronusAI___financebench/default/0.0.0/e04404e3a97f69f79c14d42f24981a1c9c3bcd18/dataset_info.json
+2025-11-11 13:50:51,466 - filelock - DEBUG - Attempting to release lock 139665741808336 on /u/kobeissa/.cache/huggingface/datasets/PatronusAI___financebench/default/0.0.0/e04404e3a97f69f79c14d42f24981a1c9c3bcd18_builder.lock
+2025-11-11 13:50:51,466 - filelock - DEBUG - Lock 139665741808336 released on /u/kobeissa/.cache/huggingface/datasets/PatronusAI___financebench/default/0.0.0/e04404e3a97f69f79c14d42f24981a1c9c3bcd18_builder.lock
+2025-11-11 13:50:51,471 - data_loader - INFO - Successfully loaded 150 examples
+2025-11-11 13:50:51,471 - data_loader - INFO - Columns available: ['financebench_id', 'company', 'doc_name', 'question_type', 'question_reasoning', 'domain_question_num', 'question', 'answer', 'justification', 'dataset_subset_label', 'evidence', 'gics_sector', 'doc_type', 'doc_period', 'doc_link']
+2025-11-11 13:50:51,471 - data_loader - INFO - ================================================================================
+2025-11-11 13:50:51,471 - data_loader - INFO - DATASET STATISTICS
+2025-11-11 13:50:51,471 - data_loader - INFO - ================================================================================
+2025-11-11 13:50:51,471 - data_loader - INFO - Total examples: 150
+2025-11-11 13:50:51,471 - data_loader - INFO - Columns: ['financebench_id', 'company', 'doc_name', 'question_type', 'question_reasoning', 'domain_question_num', 'question', 'answer', 'justification', 'dataset_subset_label', 'evidence', 'gics_sector', 'doc_type', 'doc_period', 'doc_link']
+2025-11-11 13:50:51,471 - data_loader - INFO - ✓ Column 'question' present
+2025-11-11 13:50:51,472 - data_loader - INFO - ✓ Column 'answer' present
+2025-11-11 13:50:51,472 - data_loader - INFO - ✓ Column 'evidence' present
+2025-11-11 13:50:51,472 - data_loader - INFO - ✓ Column 'doc_name' present
+2025-11-11 13:50:51,472 - data_loader - INFO - 
+Question lengths:
+2025-11-11 13:50:51,472 - data_loader - INFO -   Mean: 161.09 chars
+2025-11-11 13:50:51,472 - data_loader - INFO -   Min: 44 chars
+2025-11-11 13:50:51,472 - data_loader - INFO -   Max: 592 chars
+2025-11-11 13:50:51,472 - data_loader - INFO -   Median: 137.50 chars
+2025-11-11 13:50:51,473 - data_loader - INFO - 
+Answer lengths:
+2025-11-11 13:50:51,473 - data_loader - INFO -   Mean: 78.19 chars
+2025-11-11 13:50:51,473 - data_loader - INFO -   Min: 1 chars
+2025-11-11 13:50:51,473 - data_loader - INFO -   Max: 609 chars
+2025-11-11 13:50:51,473 - data_loader - INFO -   Median: 50.50 chars
+2025-11-11 13:50:51,478 - data_loader - INFO - 
+Evidence lengths:
+2025-11-11 13:50:51,478 - data_loader - INFO -   Mean: 5515.01 chars
+2025-11-11 13:50:51,478 - data_loader - INFO -   Min: 1552 chars
+2025-11-11 13:50:51,478 - data_loader - INFO -   Max: 25154 chars
+2025-11-11 13:50:51,478 - data_loader - INFO -   Median: 4729.00 chars
+2025-11-11 13:50:51,478 - data_loader - INFO - 
+Missing values:
+2025-11-11 13:50:51,478 - data_loader - INFO -   question_reasoning: 50 (33.33%)
+2025-11-11 13:50:51,478 - data_loader - INFO -   domain_question_num: 100 (66.67%)
+2025-11-11 13:50:51,478 - data_loader - INFO -   justification: 50 (33.33%)
+2025-11-11 13:50:51,479 - data_loader - INFO - ================================================================================
+2025-11-11 13:50:51,479 - data_loader - INFO - Retrieved batch of 5 examples
+2025-11-11 13:50:51,481 - RAGExperiment - INFO - Processing 5 samples
+2025-11-11 13:50:51,481 - RAGExperiment - INFO - 
+================================================================================
+2025-11-11 13:50:51,481 - RAGExperiment - INFO - RUNNING CLOSED-BOOK EXPERIMENT
+2025-11-11 13:50:51,481 - RAGExperiment - INFO - ================================================================================
+2025-11-11 13:50:51,481 - RAGExperiment - INFO - 
+--- Sample 1/5 ---
+2025-11-11 13:50:51,481 - RAGExperiment - INFO - 
+Initializing LLM: meta-llama/Llama-3.2-3B-Instruct
+2025-11-11 13:50:51,481 - RAGExperiment - INFO -   Device: cuda
+2025-11-11 13:50:51,481 - RAGExperiment - INFO -   8-bit: True
+2025-11-11 13:50:51,481 - RAGExperiment - INFO - Loading tokenizer...
+2025-11-11 13:50:51,785 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "HEAD /meta-llama/Llama-3.2-3B-Instruct/resolve/main/tokenizer_config.json HTTP/1.1" 200 0
+2025-11-11 13:50:52,099 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "GET /api/models/meta-llama/Llama-3.2-3B-Instruct/tree/main/additional_chat_templates?recursive=False&expand=False HTTP/1.1" 404 64
+2025-11-11 13:50:52,319 - RAGExperiment - INFO - Loading model (this may take a moment)...
+2025-11-11 13:50:52,319 - RAGExperiment - INFO -   Using 8-bit quantization for memory efficiency
+2025-11-11 13:50:52,624 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "HEAD /meta-llama/Llama-3.2-3B-Instruct/resolve/main/config.json HTTP/1.1" 200 0
+2025-11-11 13:50:53,009 - accelerate.utils.modeling - INFO - We will use 90% of the memory on device 0 for storing the model, and 10% for the buffer to avoid OOM. You can set `max_memory` in to a higher value to use more memory (at your own risk).
+2025-11-11 13:51:32,669 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "HEAD /meta-llama/Llama-3.2-3B-Instruct/resolve/main/generation_config.json HTTP/1.1" 200 0
+2025-11-11 13:51:33,004 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "HEAD /meta-llama/Llama-3.2-3B-Instruct/resolve/main/custom_generate/generate.py HTTP/1.1" 404 0
+2025-11-11 13:51:33,014 - RAGExperiment - INFO - ✓ LLM initialized successfully
+2025-11-11 13:51:33,014 - RAGExperiment - INFO - 
+Generating answer for question: What is the FY2018 capital expenditure amount (in USD millions) for 3M? Give a response to the quest...
+2025-11-11 13:51:33,014 - RAGExperiment - INFO - Generating response from LLM...
+2025-11-11 13:51:44,616 - RAGExperiment - INFO - Generated answer: I don't have access to real-time data or specific financial statements for 3M for the year 2018. However, I can guide you on how to find the information.
+
+The capital expenditures (CapEx) can be found...
+2025-11-11 13:51:44,616 - evaluator - INFO - ================================================================================
+2025-11-11 13:51:44,616 - evaluator - INFO - GENERATION EVALUATION
+2025-11-11 13:51:44,616 - evaluator - INFO - ================================================================================
+2025-11-11 13:51:44,616 - evaluator - INFO - Prediction: I don't have access to real-time data or specific financial statements for 3M for the year 2018. However, I can guide you on how to find the information.
+
+The capital expenditures (CapEx) can be found...
+2025-11-11 13:51:44,616 - evaluator - INFO - Reference: $1577.00...
+2025-11-11 13:51:44,622 - evaluator - DEBUG - BLEU scores: {'bleu_1': 0.0, 'bleu_2': 0.0, 'bleu_3': 0.0, 'bleu_4': 0.0020145901152448416}
+2025-11-11 13:51:44,622 - evaluator - DEBUG - ROUGE scores: {'rouge_1_precision': 0.0, 'rouge_1_recall': 0.0, 'rouge_1_f1': 0.0, 'rouge_2_precision': 0.0, 'rouge_2_recall': 0.0, 'rouge_2_f1': 0.0, 'rouge_l_precision': 0.0, 'rouge_l_recall': 0.0, 'rouge_l_f1': 0.0}
+2025-11-11 13:51:44,622 - evaluator - INFO - 
+Evaluation Summary:
+2025-11-11 13:51:44,623 - evaluator - INFO -   BLEU-4: 0.0020
+2025-11-11 13:51:44,623 - evaluator - INFO -   ROUGE-L F1: 0.0000
+2025-11-11 13:51:44,623 - evaluator - INFO - ================================================================================
+2025-11-11 13:51:44,623 - RAGExperiment - INFO - Completed sample 1
+2025-11-11 13:51:44,623 - RAGExperiment - INFO - 
+--- Sample 2/5 ---
+2025-11-11 13:51:44,623 - RAGExperiment - INFO - 
+Generating answer for question: Assume that you are a public equities analyst. Answer the following question by primarily using info...
+2025-11-11 13:51:44,623 - RAGExperiment - INFO - Generating response from LLM...
+2025-11-11 13:51:53,934 - RAGExperiment - INFO - Generated answer: To answer this question, I'll need to refer to 3M's balance sheet for FY2018. According to 3M's FY2018 annual report, the net property, plant, and equipment (PP&E) is not explicitly stated.
+
+However, ...
+2025-11-11 13:51:53,934 - evaluator - INFO - ================================================================================
+2025-11-11 13:51:53,934 - evaluator - INFO - GENERATION EVALUATION
+2025-11-11 13:51:53,934 - evaluator - INFO - ================================================================================
+2025-11-11 13:51:53,934 - evaluator - INFO - Prediction: To answer this question, I'll need to refer to 3M's balance sheet for FY2018. According to 3M's FY2018 annual report, the net property, plant, and equipment (PP&E) is not explicitly stated.
+
+However, ...
+2025-11-11 13:51:53,934 - evaluator - INFO - Reference: $8.70...
+2025-11-11 13:51:53,935 - evaluator - DEBUG - BLEU scores: {'bleu_1': 0.0, 'bleu_2': 0.0, 'bleu_3': 0.0, 'bleu_4': 0.0015405559305611467}
+2025-11-11 13:51:53,935 - evaluator - DEBUG - ROUGE scores: {'rouge_1_precision': 0.0, 'rouge_1_recall': 0.0, 'rouge_1_f1': 0.0, 'rouge_2_precision': 0.0, 'rouge_2_recall': 0.0, 'rouge_2_f1': 0.0, 'rouge_l_precision': 0.0, 'rouge_l_recall': 0.0, 'rouge_l_f1': 0.0}
+2025-11-11 13:51:53,935 - evaluator - INFO - 
+Evaluation Summary:
+2025-11-11 13:51:53,935 - evaluator - INFO -   BLEU-4: 0.0015
+2025-11-11 13:51:53,935 - evaluator - INFO -   ROUGE-L F1: 0.0000
+2025-11-11 13:51:53,935 - evaluator - INFO - ================================================================================
+2025-11-11 13:51:53,935 - RAGExperiment - INFO - Completed sample 2
+2025-11-11 13:51:53,935 - RAGExperiment - INFO - 
+--- Sample 3/5 ---
+2025-11-11 13:51:53,935 - RAGExperiment - INFO - 
+Generating answer for question: Is 3M a capital-intensive business based on FY2022 data?...
+2025-11-11 13:51:53,935 - RAGExperiment - INFO - Generating response from LLM...
+2025-11-11 13:52:03,360 - RAGExperiment - INFO - Generated answer: According to 3M's FY2022 financial report, the company had:
+
+* Total assets: $35.3 billion
+* Total equity: $29.5 billion
+* Total debt: $5.5 billion
+
+Based on these numbers, 3M's debt-to-equity ratio i...
+2025-11-11 13:52:03,360 - evaluator - INFO - ================================================================================
+2025-11-11 13:52:03,360 - evaluator - INFO - GENERATION EVALUATION
+2025-11-11 13:52:03,360 - evaluator - INFO - ================================================================================
+2025-11-11 13:52:03,360 - evaluator - INFO - Prediction: According to 3M's FY2022 financial report, the company had:
+
+* Total assets: $35.3 billion
+* Total equity: $29.5 billion
+* Total debt: $5.5 billion
+
+Based on these numbers, 3M's debt-to-equity ratio i...
+2025-11-11 13:52:03,360 - evaluator - INFO - Reference: No, the company is managing its CAPEX and Fixed Assets pretty efficiently, which is evident from below key metrics:
+CAPEX/Revenue Ratio: 5.1%
+Fixed assets/Total Assets: 20%
+Return on Assets= 12.4%...
+2025-11-11 13:52:03,361 - evaluator - DEBUG - BLEU scores: {'bleu_1': 0.0663265306122449, 'bleu_2': 0.015384615384615385, 'bleu_3': 0.0, 'bleu_4': 0.01303604611727296}
+2025-11-11 13:52:03,363 - evaluator - DEBUG - ROUGE scores: {'rouge_1_precision': 0.0663265306122449, 'rouge_1_recall': 0.38235294117647056, 'rouge_1_f1': 0.11304347826086956, 'rouge_2_precision': 0.015384615384615385, 'rouge_2_recall': 0.09090909090909091, 'rouge_2_f1': 0.026315789473684213, 'rouge_l_precision': 0.03571428571428571, 'rouge_l_recall': 0.20588235294117646, 'rouge_l_f1': 0.0608695652173913}
+2025-11-11 13:52:03,363 - evaluator - INFO - 
+Evaluation Summary:
+2025-11-11 13:52:03,363 - evaluator - INFO -   BLEU-4: 0.0130
+2025-11-11 13:52:03,363 - evaluator - INFO -   ROUGE-L F1: 0.0609
+2025-11-11 13:52:03,363 - evaluator - INFO - ================================================================================
+2025-11-11 13:52:03,363 - RAGExperiment - INFO - Completed sample 3
+2025-11-11 13:52:03,363 - RAGExperiment - INFO - 
+--- Sample 4/5 ---
+2025-11-11 13:52:03,363 - RAGExperiment - INFO - 
+Generating answer for question: What drove operating margin change as of FY2022 for 3M? If operating margin is not a useful metric f...
+2025-11-11 13:52:03,363 - RAGExperiment - INFO - Generating response from LLM...
+2025-11-11 13:52:12,815 - RAGExperiment - INFO - Generated answer: As of FY2022, 3M reported a net operating margin of 24.6% and a gross margin of 43.9%.
+
+According to 3M's annual report, the operating margin increased from 22.2% in FY2021 to 24.6% in FY2022. The mai...
+2025-11-11 13:52:12,816 - evaluator - INFO - ================================================================================
+2025-11-11 13:52:12,816 - evaluator - INFO - GENERATION EVALUATION
+2025-11-11 13:52:12,816 - evaluator - INFO - ================================================================================
+2025-11-11 13:52:12,816 - evaluator - INFO - Prediction: As of FY2022, 3M reported a net operating margin of 24.6% and a gross margin of 43.9%.
+
+According to 3M's annual report, the operating margin increased from 22.2% in FY2021 to 24.6% in FY2022. The mai...
+2025-11-11 13:52:12,816 - evaluator - INFO - Reference: Operating Margin for 3M in FY2022 has decreased by 1.7% primarily due to: 
+-Decrease in gross Margin
+-mostly one-off charges including Combat Arms Earplugs litigation, impairment related to exiting PF...
+2025-11-11 13:52:12,816 - evaluator - DEBUG - BLEU scores: {'bleu_1': 0.08717948717948718, 'bleu_2': 0.020618556701030927, 'bleu_3': 0.0051813471502590676, 'bleu_4': 0.0064531639669164805}
+2025-11-11 13:52:12,818 - evaluator - DEBUG - ROUGE scores: {'rouge_1_precision': 0.09230769230769231, 'rouge_1_recall': 0.4186046511627907, 'rouge_1_f1': 0.15126050420168072, 'rouge_2_precision': 0.020618556701030927, 'rouge_2_recall': 0.09523809523809523, 'rouge_2_f1': 0.03389830508474576, 'rouge_l_precision': 0.06153846153846154, 'rouge_l_recall': 0.27906976744186046, 'rouge_l_f1': 0.1008403361344538}
+2025-11-11 13:52:12,818 - evaluator - INFO - 
+Evaluation Summary:
+2025-11-11 13:52:12,818 - evaluator - INFO -   BLEU-4: 0.0065
+2025-11-11 13:52:12,818 - evaluator - INFO -   ROUGE-L F1: 0.1008
+2025-11-11 13:52:12,818 - evaluator - INFO - ================================================================================
+2025-11-11 13:52:12,818 - RAGExperiment - INFO - Completed sample 4
+2025-11-11 13:52:12,818 - RAGExperiment - INFO - 
+--- Sample 5/5 ---
+2025-11-11 13:52:12,818 - RAGExperiment - INFO - 
+Generating answer for question: If we exclude the impact of M&A, which segment has dragged down 3M's overall growth in 2022?...
+2025-11-11 13:52:12,818 - RAGExperiment - INFO - Generating response from LLM...
+2025-11-11 13:52:20,613 - RAGExperiment - INFO - Generated answer: I don't have have access to real-time data or specific financial reports, but I can provide general information on 3M's segments. 
+
+As of my last update, 3M is a multinational conglomerate with severa...
+2025-11-11 13:52:20,613 - evaluator - INFO - ================================================================================
+2025-11-11 13:52:20,613 - evaluator - INFO - GENERATION EVALUATION
+2025-11-11 13:52:20,613 - evaluator - INFO - ================================================================================
+2025-11-11 13:52:20,613 - evaluator - INFO - Prediction: I don't have have access to real-time data or specific financial reports, but I can provide general information on 3M's segments. 
+
+As of my last update, 3M is a multinational conglomerate with severa...
+2025-11-11 13:52:20,613 - evaluator - INFO - Reference: The consumer segment shrunk by 0.9% organically....
+2025-11-11 13:52:20,614 - evaluator - DEBUG - BLEU scores: {'bleu_1': 0.018404907975460124, 'bleu_2': 0.006172839506172839, 'bleu_3': 0.0, 'bleu_4': 0.0025779022493107617}
+2025-11-11 13:52:20,615 - evaluator - DEBUG - ROUGE scores: {'rouge_1_precision': 0.018404907975460124, 'rouge_1_recall': 0.375, 'rouge_1_f1': 0.03508771929824561, 'rouge_2_precision': 0.006172839506172839, 'rouge_2_recall': 0.14285714285714285, 'rouge_2_f1': 0.011834319526627219, 'rouge_l_precision': 0.018404907975460124, 'rouge_l_recall': 0.375, 'rouge_l_f1': 0.03508771929824561}
+2025-11-11 13:52:20,615 - evaluator - INFO - 
+Evaluation Summary:
+2025-11-11 13:52:20,615 - evaluator - INFO -   BLEU-4: 0.0026
+2025-11-11 13:52:20,615 - evaluator - INFO -   ROUGE-L F1: 0.0351
+2025-11-11 13:52:20,615 - evaluator - INFO - ================================================================================
+2025-11-11 13:52:20,615 - RAGExperiment - INFO - Completed sample 5
+2025-11-11 13:52:20,615 - RAGExperiment - INFO - 
+================================================================================
+2025-11-11 13:52:20,615 - RAGExperiment - INFO - AGGREGATE STATISTICS
+2025-11-11 13:52:20,615 - RAGExperiment - INFO - ================================================================================
+2025-11-11 13:52:20,615 - RAGExperiment - INFO - 
+Generated Answer Lengths:
+2025-11-11 13:52:20,615 - RAGExperiment - INFO -   Mean: 1095.20 chars
+2025-11-11 13:52:20,615 - RAGExperiment - INFO -   Min: 1012 chars
+2025-11-11 13:52:20,615 - RAGExperiment - INFO -   Max: 1220 chars
+2025-11-11 13:52:20,617 - RAGExperiment - INFO -   Median: 1081.00 chars
+2025-11-11 13:52:20,617 - RAGExperiment - INFO - 
+Generation Performance:
+2025-11-11 13:52:20,617 - RAGExperiment - INFO -   Mean BLEU-4: 0.0051
+2025-11-11 13:52:20,617 - RAGExperiment - INFO -   Mean ROUGE-L F1: 0.0394
+2025-11-11 13:52:20,617 - RAGExperiment - INFO - ================================================================================
+2025-11-11 13:52:20,622 - RAGExperiment - INFO - 
+Results saved to: outputs/closed_book_20251111_135220.json
+2025-11-11 13:52:20,622 - RAGExperiment - INFO - 
+================================================================================
+2025-11-11 13:52:20,622 - RAGExperiment - INFO - EXPERIMENT COMPLETE
+2025-11-11 13:52:20,622 - RAGExperiment - INFO - ================================================================================
+2025-11-11 13:52:20,625 - evaluator - INFO - SacreBLEU initialized successfully
+2025-11-11 13:52:20,625 - absl - INFO - Using default tokenizer.
+2025-11-11 13:52:20,625 - evaluator - INFO - ROUGE scorer initialized successfully
+2025-11-11 13:52:20,625 - evaluator - INFO - Evaluator initialized - BLEU: True, ROUGE: True, BERTScore: False, LLM Judge: False
+2025-11-11 13:52:20,626 - RAGExperiment - INFO - ================================================================================
+2025-11-11 13:52:20,626 - RAGExperiment - INFO - INITIALIZING RAG EXPERIMENT: CLOSED_BOOK
+2025-11-11 13:52:20,626 - RAGExperiment - INFO - ================================================================================
+2025-11-11 13:52:20,626 - RAGExperiment - INFO - Configuration:
+2025-11-11 13:52:20,626 - RAGExperiment - INFO -   Experiment Type: closed_book
+2025-11-11 13:52:20,626 - RAGExperiment - INFO -   LLM Model: Qwen/Qwen2.5-7B-Instruct
+2025-11-11 13:52:20,626 - RAGExperiment - INFO -   Judge Model: Disabled
+2025-11-11 13:52:20,626 - RAGExperiment - INFO -   Device: cuda
+2025-11-11 13:52:20,626 - RAGExperiment - INFO -   8-bit Loading: True
+2025-11-11 13:52:20,626 - RAGExperiment - INFO -   Chunk Size: 512
+2025-11-11 13:52:20,626 - RAGExperiment - INFO -   Chunk Overlap: 50
+2025-11-11 13:52:20,626 - RAGExperiment - INFO -   Top-K Retrieval: 3
+2025-11-11 13:52:20,626 - RAGExperiment - INFO -   Embedding Model: sentence-transformers/all-MiniLM-L6-v2
+2025-11-11 13:52:20,626 - RAGExperiment - INFO -   Max New Tokens: 256
+2025-11-11 13:52:20,626 - RAGExperiment - INFO -   Using LangChain + FAISS + HuggingFace LLMs
+2025-11-11 13:52:20,626 - RAGExperiment - INFO - ================================================================================
+2025-11-11 13:52:20,626 - RAGExperiment - INFO - 
+Initializing LangChain components...
+2025-11-11 13:52:20,626 - RAGExperiment - INFO - Loading embeddings: sentence-transformers/all-MiniLM-L6-v2
+2025-11-11 13:52:20,630 - sentence_transformers.SentenceTransformer - INFO - Load pretrained SentenceTransformer: sentence-transformers/all-MiniLM-L6-v2
+2025-11-11 13:52:20,940 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "HEAD /sentence-transformers/all-MiniLM-L6-v2/resolve/main/modules.json HTTP/1.1" 307 0
+2025-11-11 13:52:21,096 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "HEAD /api/resolve-cache/models/sentence-transformers/all-MiniLM-L6-v2/c9745ed1d9f207416be6d2e6f8de32d1f16199bf/modules.json HTTP/1.1" 200 0
+2025-11-11 13:52:21,413 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "HEAD /sentence-transformers/all-MiniLM-L6-v2/resolve/main/config_sentence_transformers.json HTTP/1.1" 307 0
+2025-11-11 13:52:21,564 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "HEAD /api/resolve-cache/models/sentence-transformers/all-MiniLM-L6-v2/c9745ed1d9f207416be6d2e6f8de32d1f16199bf/config_sentence_transformers.json HTTP/1.1" 200 0
+2025-11-11 13:52:21,880 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "HEAD /sentence-transformers/all-MiniLM-L6-v2/resolve/main/config_sentence_transformers.json HTTP/1.1" 307 0
+2025-11-11 13:52:22,032 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "HEAD /api/resolve-cache/models/sentence-transformers/all-MiniLM-L6-v2/c9745ed1d9f207416be6d2e6f8de32d1f16199bf/config_sentence_transformers.json HTTP/1.1" 200 0
+2025-11-11 13:52:22,336 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "HEAD /sentence-transformers/all-MiniLM-L6-v2/resolve/main/README.md HTTP/1.1" 307 0
+2025-11-11 13:52:22,488 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "HEAD /api/resolve-cache/models/sentence-transformers/all-MiniLM-L6-v2/c9745ed1d9f207416be6d2e6f8de32d1f16199bf/README.md HTTP/1.1" 200 0
+2025-11-11 13:52:22,794 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "HEAD /sentence-transformers/all-MiniLM-L6-v2/resolve/main/modules.json HTTP/1.1" 307 0
+2025-11-11 13:52:22,945 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "HEAD /api/resolve-cache/models/sentence-transformers/all-MiniLM-L6-v2/c9745ed1d9f207416be6d2e6f8de32d1f16199bf/modules.json HTTP/1.1" 200 0
+2025-11-11 13:52:23,250 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "HEAD /sentence-transformers/all-MiniLM-L6-v2/resolve/main/sentence_bert_config.json HTTP/1.1" 307 0
+2025-11-11 13:52:23,401 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "HEAD /api/resolve-cache/models/sentence-transformers/all-MiniLM-L6-v2/c9745ed1d9f207416be6d2e6f8de32d1f16199bf/sentence_bert_config.json HTTP/1.1" 200 0
+2025-11-11 13:52:23,707 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "HEAD /sentence-transformers/all-MiniLM-L6-v2/resolve/main/adapter_config.json HTTP/1.1" 404 0
+2025-11-11 13:52:24,017 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "HEAD /sentence-transformers/all-MiniLM-L6-v2/resolve/main/config.json HTTP/1.1" 307 0
+2025-11-11 13:52:24,169 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "HEAD /api/resolve-cache/models/sentence-transformers/all-MiniLM-L6-v2/c9745ed1d9f207416be6d2e6f8de32d1f16199bf/config.json HTTP/1.1" 200 0
+2025-11-11 13:52:24,491 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "HEAD /sentence-transformers/all-MiniLM-L6-v2/resolve/main/tokenizer_config.json HTTP/1.1" 307 0
+2025-11-11 13:52:24,643 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "HEAD /api/resolve-cache/models/sentence-transformers/all-MiniLM-L6-v2/c9745ed1d9f207416be6d2e6f8de32d1f16199bf/tokenizer_config.json HTTP/1.1" 200 0
+2025-11-11 13:52:24,951 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "GET /api/models/sentence-transformers/all-MiniLM-L6-v2/tree/main/additional_chat_templates?recursive=False&expand=False HTTP/1.1" 404 64
+2025-11-11 13:52:25,283 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "HEAD /sentence-transformers/all-MiniLM-L6-v2/resolve/main/1_Pooling/config.json HTTP/1.1" 307 0
+2025-11-11 13:52:25,435 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "HEAD /api/resolve-cache/models/sentence-transformers/all-MiniLM-L6-v2/c9745ed1d9f207416be6d2e6f8de32d1f16199bf/1_Pooling%2Fconfig.json HTTP/1.1" 200 0
+2025-11-11 13:52:25,749 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "GET /api/models/sentence-transformers/all-MiniLM-L6-v2 HTTP/1.1" 200 6891
+2025-11-11 13:52:25,763 - RAGExperiment - INFO - ✓ Embeddings loaded
+2025-11-11 13:52:25,763 - RAGExperiment - INFO - ✓ Text splitter initialized (chunk_size=512, overlap=50)
+2025-11-11 13:52:25,779 - RAGExperiment - INFO - 
+================================================================================
+2025-11-11 13:52:25,779 - RAGExperiment - INFO - STARTING EXPERIMENT
+2025-11-11 13:52:25,780 - RAGExperiment - INFO - ================================================================================
+2025-11-11 13:52:25,780 - data_loader - INFO - Loading FinanceBench dataset: PatronusAI/financebench, split: train
+2025-11-11 13:52:26,087 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "HEAD /datasets/PatronusAI/financebench/resolve/main/README.md HTTP/1.1" 307 0
+2025-11-11 13:52:26,239 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "HEAD /api/resolve-cache/datasets/PatronusAI/financebench/e04404e3a97f69f79c14d42f24981a1c9c3bcd18/README.md HTTP/1.1" 200 0
+2025-11-11 13:52:26,573 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "HEAD /datasets/PatronusAI/financebench/resolve/e04404e3a97f69f79c14d42f24981a1c9c3bcd18/financebench.py HTTP/1.1" 404 0
+2025-11-11 13:52:26,577 - urllib3.connectionpool - DEBUG - Resetting dropped connection: s3.amazonaws.com
+2025-11-11 13:52:26,646 - urllib3.connectionpool - DEBUG - https://s3.amazonaws.com:443 "HEAD /datasets.huggingface.co/datasets/datasets/PatronusAI/financebench/PatronusAI/financebench.py HTTP/1.1" 404 0
+2025-11-11 13:52:26,949 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "HEAD /datasets/PatronusAI/financebench/resolve/e04404e3a97f69f79c14d42f24981a1c9c3bcd18/.huggingface.yaml HTTP/1.1" 404 0
+2025-11-11 13:52:27,019 - urllib3.connectionpool - DEBUG - https://datasets-server.huggingface.co:443 "GET /info?dataset=PatronusAI/financebench HTTP/1.1" 200 None
+2025-11-11 13:52:27,327 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "GET /api/datasets/PatronusAI/financebench/tree/e04404e3a97f69f79c14d42f24981a1c9c3bcd18/data?recursive=True&expand=False HTTP/1.1" 404 79
+2025-11-11 13:52:27,640 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "HEAD /datasets/PatronusAI/financebench/resolve/e04404e3a97f69f79c14d42f24981a1c9c3bcd18/dataset_infos.json HTTP/1.1" 404 0
+2025-11-11 13:52:27,645 - filelock - DEBUG - Attempting to acquire lock 139665741811856 on /u/kobeissa/.cache/huggingface/datasets/_u_kobeissa_.cache_huggingface_datasets_PatronusAI___financebench_default_0.0.0_e04404e3a97f69f79c14d42f24981a1c9c3bcd18.lock
+2025-11-11 13:52:27,647 - filelock - DEBUG - Lock 139665741811856 acquired on /u/kobeissa/.cache/huggingface/datasets/_u_kobeissa_.cache_huggingface_datasets_PatronusAI___financebench_default_0.0.0_e04404e3a97f69f79c14d42f24981a1c9c3bcd18.lock
+2025-11-11 13:52:27,648 - fsspec.local - DEBUG - open file: /u/kobeissa/.cache/huggingface/datasets/PatronusAI___financebench/default/0.0.0/e04404e3a97f69f79c14d42f24981a1c9c3bcd18/dataset_info.json
+2025-11-11 13:52:27,649 - filelock - DEBUG - Attempting to release lock 139665741811856 on /u/kobeissa/.cache/huggingface/datasets/_u_kobeissa_.cache_huggingface_datasets_PatronusAI___financebench_default_0.0.0_e04404e3a97f69f79c14d42f24981a1c9c3bcd18.lock
+2025-11-11 13:52:27,650 - filelock - DEBUG - Lock 139665741811856 released on /u/kobeissa/.cache/huggingface/datasets/_u_kobeissa_.cache_huggingface_datasets_PatronusAI___financebench_default_0.0.0_e04404e3a97f69f79c14d42f24981a1c9c3bcd18.lock
+2025-11-11 13:52:27,651 - filelock - DEBUG - Attempting to acquire lock 139665741362928 on /u/kobeissa/.cache/huggingface/datasets/PatronusAI___financebench/default/0.0.0/e04404e3a97f69f79c14d42f24981a1c9c3bcd18_builder.lock
+2025-11-11 13:52:27,653 - filelock - DEBUG - Lock 139665741362928 acquired on /u/kobeissa/.cache/huggingface/datasets/PatronusAI___financebench/default/0.0.0/e04404e3a97f69f79c14d42f24981a1c9c3bcd18_builder.lock
+2025-11-11 13:52:27,653 - fsspec.local - DEBUG - open file: /u/kobeissa/.cache/huggingface/datasets/PatronusAI___financebench/default/0.0.0/e04404e3a97f69f79c14d42f24981a1c9c3bcd18/dataset_info.json
+2025-11-11 13:52:27,654 - filelock - DEBUG - Attempting to release lock 139665741362928 on /u/kobeissa/.cache/huggingface/datasets/PatronusAI___financebench/default/0.0.0/e04404e3a97f69f79c14d42f24981a1c9c3bcd18_builder.lock
+2025-11-11 13:52:27,654 - filelock - DEBUG - Lock 139665741362928 released on /u/kobeissa/.cache/huggingface/datasets/PatronusAI___financebench/default/0.0.0/e04404e3a97f69f79c14d42f24981a1c9c3bcd18_builder.lock
+2025-11-11 13:52:27,658 - data_loader - INFO - Successfully loaded 150 examples
+2025-11-11 13:52:27,658 - data_loader - INFO - Columns available: ['financebench_id', 'company', 'doc_name', 'question_type', 'question_reasoning', 'domain_question_num', 'question', 'answer', 'justification', 'dataset_subset_label', 'evidence', 'gics_sector', 'doc_type', 'doc_period', 'doc_link']
+2025-11-11 13:52:27,658 - data_loader - INFO - ================================================================================
+2025-11-11 13:52:27,658 - data_loader - INFO - DATASET STATISTICS
+2025-11-11 13:52:27,658 - data_loader - INFO - ================================================================================
+2025-11-11 13:52:27,658 - data_loader - INFO - Total examples: 150
+2025-11-11 13:52:27,658 - data_loader - INFO - Columns: ['financebench_id', 'company', 'doc_name', 'question_type', 'question_reasoning', 'domain_question_num', 'question', 'answer', 'justification', 'dataset_subset_label', 'evidence', 'gics_sector', 'doc_type', 'doc_period', 'doc_link']
+2025-11-11 13:52:27,658 - data_loader - INFO - ✓ Column 'question' present
+2025-11-11 13:52:27,659 - data_loader - INFO - ✓ Column 'answer' present
+2025-11-11 13:52:27,659 - data_loader - INFO - ✓ Column 'evidence' present
+2025-11-11 13:52:27,659 - data_loader - INFO - ✓ Column 'doc_name' present
+2025-11-11 13:52:27,659 - data_loader - INFO - 
+Question lengths:
+2025-11-11 13:52:27,659 - data_loader - INFO -   Mean: 161.09 chars
+2025-11-11 13:52:27,659 - data_loader - INFO -   Min: 44 chars
+2025-11-11 13:52:27,659 - data_loader - INFO -   Max: 592 chars
+2025-11-11 13:52:27,659 - data_loader - INFO -   Median: 137.50 chars
+2025-11-11 13:52:27,659 - data_loader - INFO - 
+Answer lengths:
+2025-11-11 13:52:27,659 - data_loader - INFO -   Mean: 78.19 chars
+2025-11-11 13:52:27,659 - data_loader - INFO -   Min: 1 chars
+2025-11-11 13:52:27,659 - data_loader - INFO -   Max: 609 chars
+2025-11-11 13:52:27,660 - data_loader - INFO -   Median: 50.50 chars
+2025-11-11 13:52:27,665 - data_loader - INFO - 
+Evidence lengths:
+2025-11-11 13:52:27,665 - data_loader - INFO -   Mean: 5515.01 chars
+2025-11-11 13:52:27,665 - data_loader - INFO -   Min: 1552 chars
+2025-11-11 13:52:27,665 - data_loader - INFO -   Max: 25154 chars
+2025-11-11 13:52:27,665 - data_loader - INFO -   Median: 4729.00 chars
+2025-11-11 13:52:27,665 - data_loader - INFO - 
+Missing values:
+2025-11-11 13:52:27,665 - data_loader - INFO -   question_reasoning: 50 (33.33%)
+2025-11-11 13:52:27,665 - data_loader - INFO -   domain_question_num: 100 (66.67%)
+2025-11-11 13:52:27,665 - data_loader - INFO -   justification: 50 (33.33%)
+2025-11-11 13:52:27,666 - data_loader - INFO - ================================================================================
+2025-11-11 13:52:27,666 - data_loader - INFO - Retrieved batch of 5 examples
+2025-11-11 13:52:27,666 - RAGExperiment - INFO - Processing 5 samples
+2025-11-11 13:52:27,666 - RAGExperiment - INFO - 
+================================================================================
+2025-11-11 13:52:27,666 - RAGExperiment - INFO - RUNNING CLOSED-BOOK EXPERIMENT
+2025-11-11 13:52:27,666 - RAGExperiment - INFO - ================================================================================
+2025-11-11 13:52:27,666 - RAGExperiment - INFO - 
+--- Sample 1/5 ---
+2025-11-11 13:52:27,666 - RAGExperiment - INFO - 
+Initializing LLM: Qwen/Qwen2.5-7B-Instruct
+2025-11-11 13:52:27,666 - RAGExperiment - INFO -   Device: cuda
+2025-11-11 13:52:27,666 - RAGExperiment - INFO -   8-bit: True
+2025-11-11 13:52:27,666 - RAGExperiment - INFO - Loading tokenizer...
+2025-11-11 13:52:27,973 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "HEAD /Qwen/Qwen2.5-7B-Instruct/resolve/main/tokenizer_config.json HTTP/1.1" 307 0
+2025-11-11 13:52:28,126 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "HEAD /api/resolve-cache/models/Qwen/Qwen2.5-7B-Instruct/a09a35458c702b33eeacc393d103063234e8bc28/tokenizer_config.json HTTP/1.1" 200 0
+2025-11-11 13:52:28,469 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "GET /api/models/Qwen/Qwen2.5-7B-Instruct/tree/main/additional_chat_templates?recursive=False&expand=False HTTP/1.1" 404 64
+2025-11-11 13:52:28,621 - RAGExperiment - INFO - Loading model (this may take a moment)...
+2025-11-11 13:52:28,621 - RAGExperiment - INFO -   Using 8-bit quantization for memory efficiency
+2025-11-11 13:52:28,926 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "HEAD /Qwen/Qwen2.5-7B-Instruct/resolve/main/config.json HTTP/1.1" 307 0
+2025-11-11 13:52:29,078 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "HEAD /api/resolve-cache/models/Qwen/Qwen2.5-7B-Instruct/a09a35458c702b33eeacc393d103063234e8bc28/config.json HTTP/1.1" 200 0
+2025-11-11 13:52:29,160 - accelerate.utils.modeling - INFO - We will use 90% of the memory on device 0 for storing the model, and 10% for the buffer to avoid OOM. You can set `max_memory` in to a higher value to use more memory (at your own risk).
+2025-11-11 13:54:48,573 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "HEAD /Qwen/Qwen2.5-7B-Instruct/resolve/main/generation_config.json HTTP/1.1" 307 0
+2025-11-11 13:54:48,895 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "HEAD /api/resolve-cache/models/Qwen/Qwen2.5-7B-Instruct/a09a35458c702b33eeacc393d103063234e8bc28/generation_config.json HTTP/1.1" 200 0
+2025-11-11 13:54:49,224 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "HEAD /Qwen/Qwen2.5-7B-Instruct/resolve/main/custom_generate/generate.py HTTP/1.1" 404 0
+2025-11-11 13:54:49,235 - RAGExperiment - INFO - ✓ LLM initialized successfully
+2025-11-11 13:54:49,236 - RAGExperiment - INFO - 
+Generating answer for question: What is the FY2018 capital expenditure amount (in USD millions) for 3M? Give a response to the quest...
+2025-11-11 13:54:49,236 - RAGExperiment - INFO - Generating response from LLM...
+2025-11-11 13:54:53,717 - RAGExperiment - INFO - Generated answer: To provide the exact FY2018 capital expenditure amount for 3M, I would need to refer to their cash flow statement from that specific year. According to 3M's 2018 annual report, the capital expenditure...
+2025-11-11 13:54:53,717 - evaluator - INFO - ================================================================================
+2025-11-11 13:54:53,718 - evaluator - INFO - GENERATION EVALUATION
+2025-11-11 13:54:53,718 - evaluator - INFO - ================================================================================
+2025-11-11 13:54:53,718 - evaluator - INFO - Prediction: To provide the exact FY2018 capital expenditure amount for 3M, I would need to refer to their cash flow statement from that specific year. According to 3M's 2018 annual report, the capital expenditure...
+2025-11-11 13:54:53,718 - evaluator - INFO - Reference: $1577.00...
+2025-11-11 13:54:53,718 - evaluator - DEBUG - BLEU scores: {'bleu_1': 0.0, 'bleu_2': 0.0, 'bleu_3': 0.0, 'bleu_4': 0.0056577596562095355}
+2025-11-11 13:54:53,718 - evaluator - DEBUG - ROUGE scores: {'rouge_1_precision': 0.0, 'rouge_1_recall': 0.0, 'rouge_1_f1': 0.0, 'rouge_2_precision': 0.0, 'rouge_2_recall': 0.0, 'rouge_2_f1': 0.0, 'rouge_l_precision': 0.0, 'rouge_l_recall': 0.0, 'rouge_l_f1': 0.0}
+2025-11-11 13:54:53,718 - evaluator - INFO - 
+Evaluation Summary:
+2025-11-11 13:54:53,718 - evaluator - INFO -   BLEU-4: 0.0057
+2025-11-11 13:54:53,718 - evaluator - INFO -   ROUGE-L F1: 0.0000
+2025-11-11 13:54:53,718 - evaluator - INFO - ================================================================================
+2025-11-11 13:54:53,718 - RAGExperiment - INFO - Completed sample 1
+2025-11-11 13:54:53,718 - RAGExperiment - INFO - 
+--- Sample 2/5 ---
+2025-11-11 13:54:53,718 - RAGExperiment - INFO - 
+Generating answer for question: Assume that you are a public equities analyst. Answer the following question by primarily using info...
+2025-11-11 13:54:53,718 - RAGExperiment - INFO - Generating response from LLM...
+2025-11-11 13:55:02,511 - RAGExperiment - INFO - Generated answer: To determine the Net Property, Plant, and Equipment (PP&E) for 3M at the end of fiscal year 2018, we need to look at the balance sheet. Specifically, we would subtract accumulated depreciation from th...
+2025-11-11 13:55:02,511 - evaluator - INFO - ================================================================================
+2025-11-11 13:55:02,511 - evaluator - INFO - GENERATION EVALUATION
+2025-11-11 13:55:02,511 - evaluator - INFO - ================================================================================
+2025-11-11 13:55:02,511 - evaluator - INFO - Prediction: To determine the Net Property, Plant, and Equipment (PP&E) for 3M at the end of fiscal year 2018, we need to look at the balance sheet. Specifically, we would subtract accumulated depreciation from th...
+2025-11-11 13:55:02,511 - evaluator - INFO - Reference: $8.70...
+2025-11-11 13:55:02,512 - evaluator - DEBUG - BLEU scores: {'bleu_1': 0.00980392156862745, 'bleu_2': 0.0, 'bleu_3': 0.0, 'bleu_4': 0.002773074389733541}
+2025-11-11 13:55:02,512 - evaluator - DEBUG - ROUGE scores: {'rouge_1_precision': 0.00980392156862745, 'rouge_1_recall': 0.5, 'rouge_1_f1': 0.019230769230769232, 'rouge_2_precision': 0.0, 'rouge_2_recall': 0.0, 'rouge_2_f1': 0.0, 'rouge_l_precision': 0.00980392156862745, 'rouge_l_recall': 0.5, 'rouge_l_f1': 0.019230769230769232}
+2025-11-11 13:55:02,512 - evaluator - INFO - 
+Evaluation Summary:
+2025-11-11 13:55:02,512 - evaluator - INFO -   BLEU-4: 0.0028
+2025-11-11 13:55:02,512 - evaluator - INFO -   ROUGE-L F1: 0.0192
+2025-11-11 13:55:02,512 - evaluator - INFO - ================================================================================
+2025-11-11 13:55:02,512 - RAGExperiment - INFO - Completed sample 2
+2025-11-11 13:55:02,512 - RAGExperiment - INFO - 
+--- Sample 3/5 ---
+2025-11-11 13:55:02,512 - RAGExperiment - INFO - 
+Generating answer for question: Is 3M a capital-intensive business based on FY2022 data?...
+2025-11-11 13:55:02,512 - RAGExperiment - INFO - Generating response from LLM...
+2025-11-11 13:55:12,986 - RAGExperiment - INFO - Generated answer: To determine if 3M is a capital-intensive business based on fiscal year 2022 data, we would typically look at metrics such as the ratio of total assets to sales or total equity, the amount of fixed as...
+2025-11-11 13:55:12,986 - evaluator - INFO - ================================================================================
+2025-11-11 13:55:12,986 - evaluator - INFO - GENERATION EVALUATION
+2025-11-11 13:55:12,986 - evaluator - INFO - ================================================================================
+2025-11-11 13:55:12,986 - evaluator - INFO - Prediction: To determine if 3M is a capital-intensive business based on fiscal year 2022 data, we would typically look at metrics such as the ratio of total assets to sales or total equity, the amount of fixed as...
+2025-11-11 13:55:12,986 - evaluator - INFO - Reference: No, the company is managing its CAPEX and Fixed Assets pretty efficiently, which is evident from below key metrics:
+CAPEX/Revenue Ratio: 5.1%
+Fixed assets/Total Assets: 20%
+Return on Assets= 12.4%...
+2025-11-11 13:55:12,987 - evaluator - DEBUG - BLEU scores: {'bleu_1': 0.0880503144654088, 'bleu_2': 0.012658227848101266, 'bleu_3': 0.0, 'bleu_4': 0.006342146909213475}
+2025-11-11 13:55:12,988 - evaluator - DEBUG - ROUGE scores: {'rouge_1_precision': 0.09433962264150944, 'rouge_1_recall': 0.4411764705882353, 'rouge_1_f1': 0.15544041450777205, 'rouge_2_precision': 0.012658227848101266, 'rouge_2_recall': 0.06060606060606061, 'rouge_2_f1': 0.02094240837696335, 'rouge_l_precision': 0.03773584905660377, 'rouge_l_recall': 0.17647058823529413, 'rouge_l_f1': 0.062176165803108814}
+2025-11-11 13:55:12,988 - evaluator - INFO - 
+Evaluation Summary:
+2025-11-11 13:55:12,988 - evaluator - INFO -   BLEU-4: 0.0063
+2025-11-11 13:55:12,988 - evaluator - INFO -   ROUGE-L F1: 0.0622
+2025-11-11 13:55:12,988 - evaluator - INFO - ================================================================================
+2025-11-11 13:55:12,988 - RAGExperiment - INFO - Completed sample 3
+2025-11-11 13:55:12,988 - RAGExperiment - INFO - 
+--- Sample 4/5 ---
+2025-11-11 13:55:12,988 - RAGExperiment - INFO - 
+Generating answer for question: What drove operating margin change as of FY2022 for 3M? If operating margin is not a useful metric f...
+2025-11-11 13:55:12,988 - RAGExperiment - INFO - Generating response from LLM...
+2025-11-11 13:55:26,313 - RAGExperiment - INFO - Generated answer: To provide a specific answer about the drivers of the operating margin change for 3M in fiscal year 2022 (FY2022), I would need to refer to 3M's annual report or press releases from that period. Howev...
+2025-11-11 13:55:26,313 - evaluator - INFO - ================================================================================
+2025-11-11 13:55:26,313 - evaluator - INFO - GENERATION EVALUATION
+2025-11-11 13:55:26,313 - evaluator - INFO - ================================================================================
+2025-11-11 13:55:26,313 - evaluator - INFO - Prediction: To provide a specific answer about the drivers of the operating margin change for 3M in fiscal year 2022 (FY2022), I would need to refer to 3M's annual report or press releases from that period. Howev...
+2025-11-11 13:55:26,313 - evaluator - INFO - Reference: Operating Margin for 3M in FY2022 has decreased by 1.7% primarily due to: 
+-Decrease in gross Margin
+-mostly one-off charges including Combat Arms Earplugs litigation, impairment related to exiting PF...
+2025-11-11 13:55:26,314 - evaluator - DEBUG - BLEU scores: {'bleu_1': 0.08602150537634409, 'bleu_2': 0.021621621621621623, 'bleu_3': 0.005434782608695652, 'bleu_4': 0.008694452216917364}
+2025-11-11 13:55:26,316 - evaluator - DEBUG - ROUGE scores: {'rouge_1_precision': 0.0967741935483871, 'rouge_1_recall': 0.4186046511627907, 'rouge_1_f1': 0.1572052401746725, 'rouge_2_precision': 0.021621621621621623, 'rouge_2_recall': 0.09523809523809523, 'rouge_2_f1': 0.035242290748898675, 'rouge_l_precision': 0.06989247311827956, 'rouge_l_recall': 0.3023255813953488, 'rouge_l_f1': 0.11353711790393013}
+2025-11-11 13:55:26,316 - evaluator - INFO - 
+Evaluation Summary:
+2025-11-11 13:55:26,316 - evaluator - INFO -   BLEU-4: 0.0087
+2025-11-11 13:55:26,316 - evaluator - INFO -   ROUGE-L F1: 0.1135
+2025-11-11 13:55:26,316 - evaluator - INFO - ================================================================================
+2025-11-11 13:55:26,316 - RAGExperiment - INFO - Completed sample 4
+2025-11-11 13:55:26,316 - RAGExperiment - INFO - 
+--- Sample 5/5 ---
+2025-11-11 13:55:26,316 - RAGExperiment - INFO - 
+Generating answer for question: If we exclude the impact of M&A, which segment has dragged down 3M's overall growth in 2022?...
+2025-11-11 13:55:26,316 - RAGExperiment - INFO - Generating response from LLM...
+2025-11-11 13:55:34,391 - RAGExperiment - INFO - Generated answer: To accurately answer this question, I would need to refer to 3M's financial reports for 2022. However, based on typical trends and common issues faced by large corporations, segments that often drag d...
+2025-11-11 13:55:34,391 - evaluator - INFO - ================================================================================
+2025-11-11 13:55:34,391 - evaluator - INFO - GENERATION EVALUATION
+2025-11-11 13:55:34,391 - evaluator - INFO - ================================================================================
+2025-11-11 13:55:34,391 - evaluator - INFO - Prediction: To accurately answer this question, I would need to refer to 3M's financial reports for 2022. However, based on typical trends and common issues faced by large corporations, segments that often drag d...
+2025-11-11 13:55:34,391 - evaluator - INFO - Reference: The consumer segment shrunk by 0.9% organically....
+2025-11-11 13:55:34,392 - evaluator - DEBUG - BLEU scores: {'bleu_1': 0.02631578947368421, 'bleu_2': 0.0, 'bleu_3': 0.0, 'bleu_4': 0.003610225936739799}
+2025-11-11 13:55:34,393 - evaluator - DEBUG - ROUGE scores: {'rouge_1_precision': 0.02631578947368421, 'rouge_1_recall': 0.375, 'rouge_1_f1': 0.04918032786885246, 'rouge_2_precision': 0.0, 'rouge_2_recall': 0.0, 'rouge_2_f1': 0.0, 'rouge_l_precision': 0.017543859649122806, 'rouge_l_recall': 0.25, 'rouge_l_f1': 0.03278688524590164}
+2025-11-11 13:55:34,393 - evaluator - INFO - 
+Evaluation Summary:
+2025-11-11 13:55:34,393 - evaluator - INFO -   BLEU-4: 0.0036
+2025-11-11 13:55:34,393 - evaluator - INFO -   ROUGE-L F1: 0.0328
+2025-11-11 13:55:34,393 - evaluator - INFO - ================================================================================
+2025-11-11 13:55:34,393 - RAGExperiment - INFO - Completed sample 5
+2025-11-11 13:55:34,393 - RAGExperiment - INFO - 
+================================================================================
+2025-11-11 13:55:34,393 - RAGExperiment - INFO - AGGREGATE STATISTICS
+2025-11-11 13:55:34,393 - RAGExperiment - INFO - ================================================================================
+2025-11-11 13:55:34,393 - RAGExperiment - INFO - 
+Generated Answer Lengths:
+2025-11-11 13:55:34,393 - RAGExperiment - INFO -   Mean: 781.40 chars
+2025-11-11 13:55:34,393 - RAGExperiment - INFO -   Min: 351 chars
+2025-11-11 13:55:34,393 - RAGExperiment - INFO -   Max: 1243 chars
+2025-11-11 13:55:34,393 - RAGExperiment - INFO -   Median: 749.00 chars
+2025-11-11 13:55:34,393 - RAGExperiment - INFO - 
+Generation Performance:
+2025-11-11 13:55:34,393 - RAGExperiment - INFO -   Mean BLEU-4: 0.0054
+2025-11-11 13:55:34,393 - RAGExperiment - INFO -   Mean ROUGE-L F1: 0.0455
+2025-11-11 13:55:34,393 - RAGExperiment - INFO - ================================================================================
+2025-11-11 13:55:34,397 - RAGExperiment - INFO - 
+Results saved to: outputs/closed_book_20251111_135534.json
+2025-11-11 13:55:34,397 - RAGExperiment - INFO - 
+================================================================================
+2025-11-11 13:55:34,397 - RAGExperiment - INFO - EXPERIMENT COMPLETE
+2025-11-11 13:55:34,397 - RAGExperiment - INFO - ================================================================================

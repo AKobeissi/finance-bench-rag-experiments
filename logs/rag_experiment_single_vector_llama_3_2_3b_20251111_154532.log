@@ -1,0 +1,239 @@
+2025-11-11 15:45:32,279 - evaluator - INFO - SacreBLEU initialized successfully
+2025-11-11 15:45:32,304 - absl - INFO - Using default tokenizer.
+2025-11-11 15:45:32,304 - evaluator - INFO - ROUGE scorer initialized successfully
+2025-11-11 15:45:32,304 - evaluator - INFO - Evaluator initialized - BLEU: True, ROUGE: True, BERTScore: False, LLM Judge: False
+2025-11-11 15:45:32,305 - RAGExperiment - INFO - ================================================================================
+2025-11-11 15:45:32,305 - RAGExperiment - INFO - INITIALIZING RAG EXPERIMENT: SINGLE_VECTOR
+2025-11-11 15:45:32,305 - RAGExperiment - INFO - ================================================================================
+2025-11-11 15:45:32,305 - RAGExperiment - INFO - Configuration:
+2025-11-11 15:45:32,305 - RAGExperiment - INFO -   Experiment Type: single_vector
+2025-11-11 15:45:32,305 - RAGExperiment - INFO -   LLM Model: meta-llama/Llama-3.2-3B-Instruct
+2025-11-11 15:45:32,305 - RAGExperiment - INFO -   Judge Model: Disabled
+2025-11-11 15:45:32,305 - RAGExperiment - INFO -   Device: cuda
+2025-11-11 15:45:32,305 - RAGExperiment - INFO -   8-bit Loading: True
+2025-11-11 15:45:32,305 - RAGExperiment - INFO -   Chunk Size: 512
+2025-11-11 15:45:32,305 - RAGExperiment - INFO -   Chunk Overlap: 50
+2025-11-11 15:45:32,305 - RAGExperiment - INFO -   Top-K Retrieval: 3
+2025-11-11 15:45:32,306 - RAGExperiment - INFO -   Embedding Model: sentence-transformers/all-MiniLM-L6-v2
+2025-11-11 15:45:32,306 - RAGExperiment - INFO -   Max New Tokens: 256
+2025-11-11 15:45:32,306 - RAGExperiment - INFO -   Using LangChain + FAISS + HuggingFace LLMs
+2025-11-11 15:45:32,306 - RAGExperiment - INFO - ================================================================================
+2025-11-11 15:45:32,306 - RAGExperiment - INFO - 
+Initializing LangChain components...
+2025-11-11 15:45:32,306 - RAGExperiment - INFO - Loading embeddings: sentence-transformers/all-MiniLM-L6-v2
+2025-11-11 15:45:32,308 - sentence_transformers.SentenceTransformer - INFO - Load pretrained SentenceTransformer: sentence-transformers/all-MiniLM-L6-v2
+2025-11-11 15:45:32,310 - urllib3.connectionpool - DEBUG - Starting new HTTPS connection (1): huggingface.co:443
+2025-11-11 15:45:32,696 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "HEAD /sentence-transformers/all-MiniLM-L6-v2/resolve/main/modules.json HTTP/1.1" 307 0
+2025-11-11 15:45:32,791 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "HEAD /api/resolve-cache/models/sentence-transformers/all-MiniLM-L6-v2/c9745ed1d9f207416be6d2e6f8de32d1f16199bf/modules.json HTTP/1.1" 200 0
+2025-11-11 15:45:32,998 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "HEAD /sentence-transformers/all-MiniLM-L6-v2/resolve/main/config_sentence_transformers.json HTTP/1.1" 307 0
+2025-11-11 15:45:33,092 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "HEAD /api/resolve-cache/models/sentence-transformers/all-MiniLM-L6-v2/c9745ed1d9f207416be6d2e6f8de32d1f16199bf/config_sentence_transformers.json HTTP/1.1" 200 0
+2025-11-11 15:45:33,296 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "HEAD /sentence-transformers/all-MiniLM-L6-v2/resolve/main/config_sentence_transformers.json HTTP/1.1" 307 0
+2025-11-11 15:45:33,390 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "HEAD /api/resolve-cache/models/sentence-transformers/all-MiniLM-L6-v2/c9745ed1d9f207416be6d2e6f8de32d1f16199bf/config_sentence_transformers.json HTTP/1.1" 200 0
+2025-11-11 15:45:33,594 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "HEAD /sentence-transformers/all-MiniLM-L6-v2/resolve/main/README.md HTTP/1.1" 307 0
+2025-11-11 15:45:33,687 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "HEAD /api/resolve-cache/models/sentence-transformers/all-MiniLM-L6-v2/c9745ed1d9f207416be6d2e6f8de32d1f16199bf/README.md HTTP/1.1" 200 0
+2025-11-11 15:45:33,893 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "HEAD /sentence-transformers/all-MiniLM-L6-v2/resolve/main/modules.json HTTP/1.1" 307 0
+2025-11-11 15:45:33,987 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "HEAD /api/resolve-cache/models/sentence-transformers/all-MiniLM-L6-v2/c9745ed1d9f207416be6d2e6f8de32d1f16199bf/modules.json HTTP/1.1" 200 0
+2025-11-11 15:45:34,191 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "HEAD /sentence-transformers/all-MiniLM-L6-v2/resolve/main/sentence_bert_config.json HTTP/1.1" 307 0
+2025-11-11 15:45:34,286 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "HEAD /api/resolve-cache/models/sentence-transformers/all-MiniLM-L6-v2/c9745ed1d9f207416be6d2e6f8de32d1f16199bf/sentence_bert_config.json HTTP/1.1" 200 0
+2025-11-11 15:45:34,494 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "HEAD /sentence-transformers/all-MiniLM-L6-v2/resolve/main/adapter_config.json HTTP/1.1" 404 0
+2025-11-11 15:45:34,703 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "HEAD /sentence-transformers/all-MiniLM-L6-v2/resolve/main/config.json HTTP/1.1" 307 0
+2025-11-11 15:45:34,796 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "HEAD /api/resolve-cache/models/sentence-transformers/all-MiniLM-L6-v2/c9745ed1d9f207416be6d2e6f8de32d1f16199bf/config.json HTTP/1.1" 200 0
+2025-11-11 15:45:35,050 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "HEAD /sentence-transformers/all-MiniLM-L6-v2/resolve/main/tokenizer_config.json HTTP/1.1" 307 0
+2025-11-11 15:45:35,144 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "HEAD /api/resolve-cache/models/sentence-transformers/all-MiniLM-L6-v2/c9745ed1d9f207416be6d2e6f8de32d1f16199bf/tokenizer_config.json HTTP/1.1" 200 0
+2025-11-11 15:45:35,360 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "GET /api/models/sentence-transformers/all-MiniLM-L6-v2/tree/main/additional_chat_templates?recursive=False&expand=False HTTP/1.1" 404 64
+2025-11-11 15:45:35,600 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "HEAD /sentence-transformers/all-MiniLM-L6-v2/resolve/main/1_Pooling/config.json HTTP/1.1" 307 0
+2025-11-11 15:45:35,693 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "HEAD /api/resolve-cache/models/sentence-transformers/all-MiniLM-L6-v2/c9745ed1d9f207416be6d2e6f8de32d1f16199bf/1_Pooling%2Fconfig.json HTTP/1.1" 200 0
+2025-11-11 15:45:35,904 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "GET /api/models/sentence-transformers/all-MiniLM-L6-v2 HTTP/1.1" 200 6870
+2025-11-11 15:45:36,236 - RAGExperiment - INFO - ✓ Embeddings loaded
+2025-11-11 15:45:36,236 - RAGExperiment - INFO - ✓ Text splitter initialized (chunk_size=512, overlap=50)
+2025-11-11 15:45:36,236 - RAGExperiment - INFO - 
+================================================================================
+2025-11-11 15:45:36,236 - RAGExperiment - INFO - STARTING EXPERIMENT
+2025-11-11 15:45:36,236 - RAGExperiment - INFO - ================================================================================
+2025-11-11 15:45:36,236 - data_loader - INFO - Loading FinanceBench dataset: PatronusAI/financebench, split: train
+2025-11-11 15:45:36,440 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "HEAD /datasets/PatronusAI/financebench/resolve/main/README.md HTTP/1.1" 307 0
+2025-11-11 15:45:36,533 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "HEAD /api/resolve-cache/datasets/PatronusAI/financebench/e04404e3a97f69f79c14d42f24981a1c9c3bcd18/README.md HTTP/1.1" 200 0
+2025-11-11 15:45:36,737 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "HEAD /datasets/PatronusAI/financebench/resolve/e04404e3a97f69f79c14d42f24981a1c9c3bcd18/financebench.py HTTP/1.1" 404 0
+2025-11-11 15:45:36,740 - urllib3.connectionpool - DEBUG - Starting new HTTPS connection (1): s3.amazonaws.com:443
+2025-11-11 15:45:36,816 - urllib3.connectionpool - DEBUG - https://s3.amazonaws.com:443 "HEAD /datasets.huggingface.co/datasets/datasets/PatronusAI/financebench/PatronusAI/financebench.py HTTP/1.1" 404 0
+2025-11-11 15:45:37,020 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "GET /api/datasets/PatronusAI/financebench/revision/e04404e3a97f69f79c14d42f24981a1c9c3bcd18 HTTP/1.1" 200 1293
+2025-11-11 15:45:37,223 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "HEAD /datasets/PatronusAI/financebench/resolve/e04404e3a97f69f79c14d42f24981a1c9c3bcd18/.huggingface.yaml HTTP/1.1" 404 0
+2025-11-11 15:45:37,227 - urllib3.connectionpool - DEBUG - Starting new HTTPS connection (1): datasets-server.huggingface.co:443
+2025-11-11 15:45:37,623 - urllib3.connectionpool - DEBUG - https://datasets-server.huggingface.co:443 "GET /info?dataset=PatronusAI/financebench HTTP/1.1" 200 None
+2025-11-11 15:45:38,021 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "GET /api/datasets/PatronusAI/financebench/tree/e04404e3a97f69f79c14d42f24981a1c9c3bcd18/data?recursive=True&expand=False HTTP/1.1" 404 79
+2025-11-11 15:45:38,237 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "GET /api/datasets/PatronusAI/financebench/tree/e04404e3a97f69f79c14d42f24981a1c9c3bcd18?recursive=False&expand=False HTTP/1.1" 200 312
+2025-11-11 15:45:38,462 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "HEAD /datasets/PatronusAI/financebench/resolve/e04404e3a97f69f79c14d42f24981a1c9c3bcd18/dataset_infos.json HTTP/1.1" 404 0
+2025-11-11 15:45:38,468 - filelock - DEBUG - Attempting to acquire lock 140399590150160 on /u/kobeissa/.cache/huggingface/datasets/_u_kobeissa_.cache_huggingface_datasets_PatronusAI___financebench_default_0.0.0_e04404e3a97f69f79c14d42f24981a1c9c3bcd18.lock
+2025-11-11 15:45:38,470 - filelock - DEBUG - Lock 140399590150160 acquired on /u/kobeissa/.cache/huggingface/datasets/_u_kobeissa_.cache_huggingface_datasets_PatronusAI___financebench_default_0.0.0_e04404e3a97f69f79c14d42f24981a1c9c3bcd18.lock
+2025-11-11 15:45:38,472 - fsspec.local - DEBUG - open file: /u/kobeissa/.cache/huggingface/datasets/PatronusAI___financebench/default/0.0.0/e04404e3a97f69f79c14d42f24981a1c9c3bcd18/dataset_info.json
+2025-11-11 15:45:38,473 - filelock - DEBUG - Attempting to release lock 140399590150160 on /u/kobeissa/.cache/huggingface/datasets/_u_kobeissa_.cache_huggingface_datasets_PatronusAI___financebench_default_0.0.0_e04404e3a97f69f79c14d42f24981a1c9c3bcd18.lock
+2025-11-11 15:45:38,473 - filelock - DEBUG - Lock 140399590150160 released on /u/kobeissa/.cache/huggingface/datasets/_u_kobeissa_.cache_huggingface_datasets_PatronusAI___financebench_default_0.0.0_e04404e3a97f69f79c14d42f24981a1c9c3bcd18.lock
+2025-11-11 15:45:38,475 - filelock - DEBUG - Attempting to acquire lock 140399590172432 on /u/kobeissa/.cache/huggingface/datasets/PatronusAI___financebench/default/0.0.0/e04404e3a97f69f79c14d42f24981a1c9c3bcd18_builder.lock
+2025-11-11 15:45:38,477 - filelock - DEBUG - Lock 140399590172432 acquired on /u/kobeissa/.cache/huggingface/datasets/PatronusAI___financebench/default/0.0.0/e04404e3a97f69f79c14d42f24981a1c9c3bcd18_builder.lock
+2025-11-11 15:45:38,477 - fsspec.local - DEBUG - open file: /u/kobeissa/.cache/huggingface/datasets/PatronusAI___financebench/default/0.0.0/e04404e3a97f69f79c14d42f24981a1c9c3bcd18/dataset_info.json
+2025-11-11 15:45:38,478 - filelock - DEBUG - Attempting to release lock 140399590172432 on /u/kobeissa/.cache/huggingface/datasets/PatronusAI___financebench/default/0.0.0/e04404e3a97f69f79c14d42f24981a1c9c3bcd18_builder.lock
+2025-11-11 15:45:38,478 - filelock - DEBUG - Lock 140399590172432 released on /u/kobeissa/.cache/huggingface/datasets/PatronusAI___financebench/default/0.0.0/e04404e3a97f69f79c14d42f24981a1c9c3bcd18_builder.lock
+2025-11-11 15:45:38,483 - data_loader - INFO - Successfully loaded 150 examples
+2025-11-11 15:45:38,483 - data_loader - INFO - Columns available: ['financebench_id', 'company', 'doc_name', 'question_type', 'question_reasoning', 'domain_question_num', 'question', 'answer', 'justification', 'dataset_subset_label', 'evidence', 'gics_sector', 'doc_type', 'doc_period', 'doc_link']
+2025-11-11 15:45:38,484 - data_loader - INFO - ================================================================================
+2025-11-11 15:45:38,484 - data_loader - INFO - DATASET STATISTICS
+2025-11-11 15:45:38,484 - data_loader - INFO - ================================================================================
+2025-11-11 15:45:38,484 - data_loader - INFO - Total examples: 150
+2025-11-11 15:45:38,484 - data_loader - INFO - Columns: ['financebench_id', 'company', 'doc_name', 'question_type', 'question_reasoning', 'domain_question_num', 'question', 'answer', 'justification', 'dataset_subset_label', 'evidence', 'gics_sector', 'doc_type', 'doc_period', 'doc_link']
+2025-11-11 15:45:38,484 - data_loader - INFO - ✓ Column 'question' present
+2025-11-11 15:45:38,484 - data_loader - INFO - ✓ Column 'answer' present
+2025-11-11 15:45:38,484 - data_loader - INFO - ✓ Column 'evidence' present
+2025-11-11 15:45:38,484 - data_loader - INFO - ✓ Column 'doc_name' present
+2025-11-11 15:45:38,484 - data_loader - INFO - 
+Question lengths:
+2025-11-11 15:45:38,484 - data_loader - INFO -   Mean: 161.09 chars
+2025-11-11 15:45:38,484 - data_loader - INFO -   Min: 44 chars
+2025-11-11 15:45:38,485 - data_loader - INFO -   Max: 592 chars
+2025-11-11 15:45:38,485 - data_loader - INFO -   Median: 137.50 chars
+2025-11-11 15:45:38,485 - data_loader - INFO - 
+Answer lengths:
+2025-11-11 15:45:38,485 - data_loader - INFO -   Mean: 78.19 chars
+2025-11-11 15:45:38,485 - data_loader - INFO -   Min: 1 chars
+2025-11-11 15:45:38,485 - data_loader - INFO -   Max: 609 chars
+2025-11-11 15:45:38,485 - data_loader - INFO -   Median: 50.50 chars
+2025-11-11 15:45:38,491 - data_loader - INFO - 
+Evidence lengths:
+2025-11-11 15:45:38,491 - data_loader - INFO -   Mean: 5515.01 chars
+2025-11-11 15:45:38,491 - data_loader - INFO -   Min: 1552 chars
+2025-11-11 15:45:38,491 - data_loader - INFO -   Max: 25154 chars
+2025-11-11 15:45:38,491 - data_loader - INFO -   Median: 4729.00 chars
+2025-11-11 15:45:38,491 - data_loader - INFO - 
+Missing values:
+2025-11-11 15:45:38,492 - data_loader - INFO -   question_reasoning: 50 (33.33%)
+2025-11-11 15:45:38,492 - data_loader - INFO -   domain_question_num: 100 (66.67%)
+2025-11-11 15:45:38,492 - data_loader - INFO -   justification: 50 (33.33%)
+2025-11-11 15:45:38,493 - data_loader - INFO - ================================================================================
+2025-11-11 15:45:38,493 - data_loader - INFO - Retrieved batch of 150 examples
+2025-11-11 15:45:38,496 - RAGExperiment - INFO - Processing 150 samples
+2025-11-11 15:45:38,496 - RAGExperiment - INFO - 
+================================================================================
+2025-11-11 15:45:38,496 - RAGExperiment - INFO - RUNNING SINGLE VECTOR STORE EXPERIMENT (LangChain + FAISS)
+2025-11-11 15:45:38,496 - RAGExperiment - INFO - ================================================================================
+2025-11-11 15:45:38,496 - RAGExperiment - INFO - Processing 84 unique documents
+2025-11-11 15:45:38,496 - RAGExperiment - INFO - 
+================================================================================
+2025-11-11 15:45:38,496 - RAGExperiment - INFO - Document: 3M_2018_10K
+2025-11-11 15:45:38,496 - RAGExperiment - INFO - Samples: 2
+2025-11-11 15:45:38,496 - RAGExperiment - INFO - ================================================================================
+2025-11-11 15:45:38,499 - evaluator - INFO - SacreBLEU initialized successfully
+2025-11-11 15:45:38,499 - absl - INFO - Using default tokenizer.
+2025-11-11 15:45:38,499 - evaluator - INFO - ROUGE scorer initialized successfully
+2025-11-11 15:45:38,499 - evaluator - INFO - Evaluator initialized - BLEU: True, ROUGE: True, BERTScore: False, LLM Judge: False
+2025-11-11 15:45:38,500 - RAGExperiment - INFO - ================================================================================
+2025-11-11 15:45:38,500 - RAGExperiment - INFO - INITIALIZING RAG EXPERIMENT: SINGLE_VECTOR
+2025-11-11 15:45:38,500 - RAGExperiment - INFO - ================================================================================
+2025-11-11 15:45:38,500 - RAGExperiment - INFO - Configuration:
+2025-11-11 15:45:38,500 - RAGExperiment - INFO -   Experiment Type: single_vector
+2025-11-11 15:45:38,500 - RAGExperiment - INFO -   LLM Model: Qwen/Qwen2.5-7B-Instruct
+2025-11-11 15:45:38,500 - RAGExperiment - INFO -   Judge Model: Disabled
+2025-11-11 15:45:38,500 - RAGExperiment - INFO -   Device: cuda
+2025-11-11 15:45:38,500 - RAGExperiment - INFO -   8-bit Loading: True
+2025-11-11 15:45:38,500 - RAGExperiment - INFO -   Chunk Size: 512
+2025-11-11 15:45:38,500 - RAGExperiment - INFO -   Chunk Overlap: 50
+2025-11-11 15:45:38,500 - RAGExperiment - INFO -   Top-K Retrieval: 3
+2025-11-11 15:45:38,500 - RAGExperiment - INFO -   Embedding Model: sentence-transformers/all-MiniLM-L6-v2
+2025-11-11 15:45:38,500 - RAGExperiment - INFO -   Max New Tokens: 256
+2025-11-11 15:45:38,500 - RAGExperiment - INFO -   Using LangChain + FAISS + HuggingFace LLMs
+2025-11-11 15:45:38,500 - RAGExperiment - INFO - ================================================================================
+2025-11-11 15:45:38,500 - RAGExperiment - INFO - 
+Initializing LangChain components...
+2025-11-11 15:45:38,501 - RAGExperiment - INFO - Loading embeddings: sentence-transformers/all-MiniLM-L6-v2
+2025-11-11 15:45:38,503 - sentence_transformers.SentenceTransformer - INFO - Load pretrained SentenceTransformer: sentence-transformers/all-MiniLM-L6-v2
+2025-11-11 15:45:38,701 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "HEAD /sentence-transformers/all-MiniLM-L6-v2/resolve/main/modules.json HTTP/1.1" 307 0
+2025-11-11 15:45:38,795 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "HEAD /api/resolve-cache/models/sentence-transformers/all-MiniLM-L6-v2/c9745ed1d9f207416be6d2e6f8de32d1f16199bf/modules.json HTTP/1.1" 200 0
+2025-11-11 15:45:39,003 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "HEAD /sentence-transformers/all-MiniLM-L6-v2/resolve/main/config_sentence_transformers.json HTTP/1.1" 307 0
+2025-11-11 15:45:39,096 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "HEAD /api/resolve-cache/models/sentence-transformers/all-MiniLM-L6-v2/c9745ed1d9f207416be6d2e6f8de32d1f16199bf/config_sentence_transformers.json HTTP/1.1" 200 0
+2025-11-11 15:45:39,302 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "HEAD /sentence-transformers/all-MiniLM-L6-v2/resolve/main/config_sentence_transformers.json HTTP/1.1" 307 0
+2025-11-11 15:45:39,396 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "HEAD /api/resolve-cache/models/sentence-transformers/all-MiniLM-L6-v2/c9745ed1d9f207416be6d2e6f8de32d1f16199bf/config_sentence_transformers.json HTTP/1.1" 200 0
+2025-11-11 15:45:39,688 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "HEAD /sentence-transformers/all-MiniLM-L6-v2/resolve/main/README.md HTTP/1.1" 307 0
+2025-11-11 15:45:39,782 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "HEAD /api/resolve-cache/models/sentence-transformers/all-MiniLM-L6-v2/c9745ed1d9f207416be6d2e6f8de32d1f16199bf/README.md HTTP/1.1" 200 0
+2025-11-11 15:45:39,984 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "HEAD /sentence-transformers/all-MiniLM-L6-v2/resolve/main/modules.json HTTP/1.1" 307 0
+2025-11-11 15:45:40,081 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "HEAD /api/resolve-cache/models/sentence-transformers/all-MiniLM-L6-v2/c9745ed1d9f207416be6d2e6f8de32d1f16199bf/modules.json HTTP/1.1" 200 0
+2025-11-11 15:45:40,283 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "HEAD /sentence-transformers/all-MiniLM-L6-v2/resolve/main/sentence_bert_config.json HTTP/1.1" 307 0
+2025-11-11 15:45:40,377 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "HEAD /api/resolve-cache/models/sentence-transformers/all-MiniLM-L6-v2/c9745ed1d9f207416be6d2e6f8de32d1f16199bf/sentence_bert_config.json HTTP/1.1" 200 0
+2025-11-11 15:45:40,587 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "HEAD /sentence-transformers/all-MiniLM-L6-v2/resolve/main/adapter_config.json HTTP/1.1" 404 0
+2025-11-11 15:45:40,795 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "HEAD /sentence-transformers/all-MiniLM-L6-v2/resolve/main/config.json HTTP/1.1" 307 0
+2025-11-11 15:45:40,891 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "HEAD /api/resolve-cache/models/sentence-transformers/all-MiniLM-L6-v2/c9745ed1d9f207416be6d2e6f8de32d1f16199bf/config.json HTTP/1.1" 200 0
+2025-11-11 15:45:41,120 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "HEAD /sentence-transformers/all-MiniLM-L6-v2/resolve/main/tokenizer_config.json HTTP/1.1" 307 0
+2025-11-11 15:45:41,213 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "HEAD /api/resolve-cache/models/sentence-transformers/all-MiniLM-L6-v2/c9745ed1d9f207416be6d2e6f8de32d1f16199bf/tokenizer_config.json HTTP/1.1" 200 0
+2025-11-11 15:45:41,426 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "GET /api/models/sentence-transformers/all-MiniLM-L6-v2/tree/main/additional_chat_templates?recursive=False&expand=False HTTP/1.1" 404 64
+2025-11-11 15:45:41,666 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "HEAD /sentence-transformers/all-MiniLM-L6-v2/resolve/main/1_Pooling/config.json HTTP/1.1" 307 0
+2025-11-11 15:45:41,759 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "HEAD /api/resolve-cache/models/sentence-transformers/all-MiniLM-L6-v2/c9745ed1d9f207416be6d2e6f8de32d1f16199bf/1_Pooling%2Fconfig.json HTTP/1.1" 200 0
+2025-11-11 15:45:41,975 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "GET /api/models/sentence-transformers/all-MiniLM-L6-v2 HTTP/1.1" 200 6870
+2025-11-11 15:45:41,992 - RAGExperiment - INFO - ✓ Embeddings loaded
+2025-11-11 15:45:41,992 - RAGExperiment - INFO - ✓ Text splitter initialized (chunk_size=512, overlap=50)
+2025-11-11 15:45:41,993 - RAGExperiment - INFO - 
+================================================================================
+2025-11-11 15:45:41,993 - RAGExperiment - INFO - STARTING EXPERIMENT
+2025-11-11 15:45:41,993 - RAGExperiment - INFO - ================================================================================
+2025-11-11 15:45:41,993 - data_loader - INFO - Loading FinanceBench dataset: PatronusAI/financebench, split: train
+2025-11-11 15:45:42,205 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "HEAD /datasets/PatronusAI/financebench/resolve/main/README.md HTTP/1.1" 307 0
+2025-11-11 15:45:42,299 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "HEAD /api/resolve-cache/datasets/PatronusAI/financebench/e04404e3a97f69f79c14d42f24981a1c9c3bcd18/README.md HTTP/1.1" 200 0
+2025-11-11 15:45:42,508 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "HEAD /datasets/PatronusAI/financebench/resolve/e04404e3a97f69f79c14d42f24981a1c9c3bcd18/financebench.py HTTP/1.1" 404 0
+2025-11-11 15:45:42,535 - urllib3.connectionpool - DEBUG - https://s3.amazonaws.com:443 "HEAD /datasets.huggingface.co/datasets/datasets/PatronusAI/financebench/PatronusAI/financebench.py HTTP/1.1" 404 0
+2025-11-11 15:45:42,751 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "HEAD /datasets/PatronusAI/financebench/resolve/e04404e3a97f69f79c14d42f24981a1c9c3bcd18/.huggingface.yaml HTTP/1.1" 404 0
+2025-11-11 15:45:43,055 - urllib3.connectionpool - DEBUG - https://datasets-server.huggingface.co:443 "GET /info?dataset=PatronusAI/financebench HTTP/1.1" 200 None
+2025-11-11 15:45:43,279 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "GET /api/datasets/PatronusAI/financebench/tree/e04404e3a97f69f79c14d42f24981a1c9c3bcd18/data?recursive=True&expand=False HTTP/1.1" 404 79
+2025-11-11 15:45:43,491 - urllib3.connectionpool - DEBUG - https://huggingface.co:443 "HEAD /datasets/PatronusAI/financebench/resolve/e04404e3a97f69f79c14d42f24981a1c9c3bcd18/dataset_infos.json HTTP/1.1" 404 0
+2025-11-11 15:45:43,495 - filelock - DEBUG - Attempting to acquire lock 140399590168272 on /u/kobeissa/.cache/huggingface/datasets/_u_kobeissa_.cache_huggingface_datasets_PatronusAI___financebench_default_0.0.0_e04404e3a97f69f79c14d42f24981a1c9c3bcd18.lock
+2025-11-11 15:45:43,498 - filelock - DEBUG - Lock 140399590168272 acquired on /u/kobeissa/.cache/huggingface/datasets/_u_kobeissa_.cache_huggingface_datasets_PatronusAI___financebench_default_0.0.0_e04404e3a97f69f79c14d42f24981a1c9c3bcd18.lock
+2025-11-11 15:45:43,498 - fsspec.local - DEBUG - open file: /u/kobeissa/.cache/huggingface/datasets/PatronusAI___financebench/default/0.0.0/e04404e3a97f69f79c14d42f24981a1c9c3bcd18/dataset_info.json
+2025-11-11 15:45:43,500 - filelock - DEBUG - Attempting to release lock 140399590168272 on /u/kobeissa/.cache/huggingface/datasets/_u_kobeissa_.cache_huggingface_datasets_PatronusAI___financebench_default_0.0.0_e04404e3a97f69f79c14d42f24981a1c9c3bcd18.lock
+2025-11-11 15:45:43,500 - filelock - DEBUG - Lock 140399590168272 released on /u/kobeissa/.cache/huggingface/datasets/_u_kobeissa_.cache_huggingface_datasets_PatronusAI___financebench_default_0.0.0_e04404e3a97f69f79c14d42f24981a1c9c3bcd18.lock
+2025-11-11 15:45:43,501 - filelock - DEBUG - Attempting to acquire lock 140399590317264 on /u/kobeissa/.cache/huggingface/datasets/PatronusAI___financebench/default/0.0.0/e04404e3a97f69f79c14d42f24981a1c9c3bcd18_builder.lock
+2025-11-11 15:45:43,503 - filelock - DEBUG - Lock 140399590317264 acquired on /u/kobeissa/.cache/huggingface/datasets/PatronusAI___financebench/default/0.0.0/e04404e3a97f69f79c14d42f24981a1c9c3bcd18_builder.lock
+2025-11-11 15:45:43,503 - fsspec.local - DEBUG - open file: /u/kobeissa/.cache/huggingface/datasets/PatronusAI___financebench/default/0.0.0/e04404e3a97f69f79c14d42f24981a1c9c3bcd18/dataset_info.json
+2025-11-11 15:45:43,504 - filelock - DEBUG - Attempting to release lock 140399590317264 on /u/kobeissa/.cache/huggingface/datasets/PatronusAI___financebench/default/0.0.0/e04404e3a97f69f79c14d42f24981a1c9c3bcd18_builder.lock
+2025-11-11 15:45:43,504 - filelock - DEBUG - Lock 140399590317264 released on /u/kobeissa/.cache/huggingface/datasets/PatronusAI___financebench/default/0.0.0/e04404e3a97f69f79c14d42f24981a1c9c3bcd18_builder.lock
+2025-11-11 15:45:43,508 - data_loader - INFO - Successfully loaded 150 examples
+2025-11-11 15:45:43,508 - data_loader - INFO - Columns available: ['financebench_id', 'company', 'doc_name', 'question_type', 'question_reasoning', 'domain_question_num', 'question', 'answer', 'justification', 'dataset_subset_label', 'evidence', 'gics_sector', 'doc_type', 'doc_period', 'doc_link']
+2025-11-11 15:45:43,508 - data_loader - INFO - ================================================================================
+2025-11-11 15:45:43,508 - data_loader - INFO - DATASET STATISTICS
+2025-11-11 15:45:43,508 - data_loader - INFO - ================================================================================
+2025-11-11 15:45:43,508 - data_loader - INFO - Total examples: 150
+2025-11-11 15:45:43,508 - data_loader - INFO - Columns: ['financebench_id', 'company', 'doc_name', 'question_type', 'question_reasoning', 'domain_question_num', 'question', 'answer', 'justification', 'dataset_subset_label', 'evidence', 'gics_sector', 'doc_type', 'doc_period', 'doc_link']
+2025-11-11 15:45:43,508 - data_loader - INFO - ✓ Column 'question' present
+2025-11-11 15:45:43,508 - data_loader - INFO - ✓ Column 'answer' present
+2025-11-11 15:45:43,508 - data_loader - INFO - ✓ Column 'evidence' present
+2025-11-11 15:45:43,508 - data_loader - INFO - ✓ Column 'doc_name' present
+2025-11-11 15:45:43,508 - data_loader - INFO - 
+Question lengths:
+2025-11-11 15:45:43,508 - data_loader - INFO -   Mean: 161.09 chars
+2025-11-11 15:45:43,509 - data_loader - INFO -   Min: 44 chars
+2025-11-11 15:45:43,509 - data_loader - INFO -   Max: 592 chars
+2025-11-11 15:45:43,509 - data_loader - INFO -   Median: 137.50 chars
+2025-11-11 15:45:43,509 - data_loader - INFO - 
+Answer lengths:
+2025-11-11 15:45:43,509 - data_loader - INFO -   Mean: 78.19 chars
+2025-11-11 15:45:43,509 - data_loader - INFO -   Min: 1 chars
+2025-11-11 15:45:43,509 - data_loader - INFO -   Max: 609 chars
+2025-11-11 15:45:43,509 - data_loader - INFO -   Median: 50.50 chars
+2025-11-11 15:45:43,515 - data_loader - INFO - 
+Evidence lengths:
+2025-11-11 15:45:43,515 - data_loader - INFO -   Mean: 5515.01 chars
+2025-11-11 15:45:43,515 - data_loader - INFO -   Min: 1552 chars
+2025-11-11 15:45:43,515 - data_loader - INFO -   Max: 25154 chars
+2025-11-11 15:45:43,515 - data_loader - INFO -   Median: 4729.00 chars
+2025-11-11 15:45:43,515 - data_loader - INFO - 
+Missing values:
+2025-11-11 15:45:43,516 - data_loader - INFO -   question_reasoning: 50 (33.33%)
+2025-11-11 15:45:43,516 - data_loader - INFO -   domain_question_num: 100 (66.67%)
+2025-11-11 15:45:43,516 - data_loader - INFO -   justification: 50 (33.33%)
+2025-11-11 15:45:43,516 - data_loader - INFO - ================================================================================
+2025-11-11 15:45:43,516 - data_loader - INFO - Retrieved batch of 150 examples
+2025-11-11 15:45:43,518 - RAGExperiment - INFO - Processing 150 samples
+2025-11-11 15:45:43,518 - RAGExperiment - INFO - 
+================================================================================
+2025-11-11 15:45:43,518 - RAGExperiment - INFO - RUNNING SINGLE VECTOR STORE EXPERIMENT (LangChain + FAISS)
+2025-11-11 15:45:43,518 - RAGExperiment - INFO - ================================================================================
+2025-11-11 15:45:43,518 - RAGExperiment - INFO - Processing 84 unique documents
+2025-11-11 15:45:43,518 - RAGExperiment - INFO - 
+================================================================================
+2025-11-11 15:45:43,518 - RAGExperiment - INFO - Document: 3M_2018_10K
+2025-11-11 15:45:43,518 - RAGExperiment - INFO - Samples: 2
+2025-11-11 15:45:43,518 - RAGExperiment - INFO - ================================================================================

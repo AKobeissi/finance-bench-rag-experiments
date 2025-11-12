@@ -1,0 +1,156 @@
+{
+  "metadata": {
+    "experiment_type": "closed_book",
+    "llm_model": "meta-llama/Llama-3.2-3B-Instruct",
+    "use_api": false,
+    "api_base_url": null,
+    "judge_model": null,
+    "chunk_size": 512,
+    "chunk_overlap": 50,
+    "top_k": 3,
+    "embedding_model": "sentence-transformers/all-MiniLM-L6-v2",
+    "device": "cuda",
+    "load_in_8bit": true,
+    "max_new_tokens": 256,
+    "timestamp": "2025-11-11T13:50:43.318449"
+  },
+  "num_samples": 5,
+  "framework": "LangChain + FAISS",
+  "results": [
+    {
+      "sample_id": 0,
+      "question": "What is the FY2018 capital expenditure amount (in USD millions) for 3M? Give a response to the question by relying on the details shown in the cash flow statement.",
+      "reference_answer": "$1577.00",
+      "generated_answer": "I don't have access to real-time data or specific financial statements for 3M for the year 2018. However, I can guide you on how to find the information.\n\nThe capital expenditures (CapEx) can be found in 3M's annual report, specifically in the \"Operating Activities\" section of the cash flow statement.\n\nAccording to 3M's FY2018 annual report, the cash flow statement shows:\n\n* Operating Activities: \n  - Net cash provided by operating activities: $4,441 million\n  - Capital expenditures: $3,445 million\n\nTo calculate the total capital expenditure amount, we can subtract the net cash provided by operating activities from the total operating cash inflows.\n\nTotal capital expenditures = Net cash provided by operating activities - Other investing and financing activities\n\nSince 3M did not provide the other investing and financing activities, we will only use the net cash provided by operating activities.\n\nTotal capital expenditures = $4,441 million - $3,445 million \nTotal capital expenditures = $996 million",
+      "generation_length": 1012,
+      "generation_evaluation": {
+        "bleu": {
+          "bleu_1": 0.0,
+          "bleu_2": 0.0,
+          "bleu_3": 0.0,
+          "bleu_4": 0.0020145901152448416
+        },
+        "rouge": {
+          "rouge_1_precision": 0.0,
+          "rouge_1_recall": 0.0,
+          "rouge_1_f1": 0.0,
+          "rouge_2_precision": 0.0,
+          "rouge_2_recall": 0.0,
+          "rouge_2_f1": 0.0,
+          "rouge_l_precision": 0.0,
+          "rouge_l_recall": 0.0,
+          "rouge_l_f1": 0.0
+        }
+      },
+      "experiment_type": "closed_book"
+    },
+    {
+      "sample_id": 1,
+      "question": "Assume that you are a public equities analyst. Answer the following question by primarily using information that is shown in the balance sheet: what is the year end FY2018 net PPNE for 3M? Answer in USD billions.",
+      "reference_answer": "$8.70",
+      "generated_answer": "To answer this question, I'll need to refer to 3M's balance sheet for FY2018. According to 3M's FY2018 annual report, the net property, plant, and equipment (PP&E) is not explicitly stated.\n\nHowever, I can estimate the net PP&E for FY2018 by looking at the beginning and ending balances of PP&E and depreciation.\n\nAccording to 3M's FY2018 balance sheet, the beginning of the year PP&E balance was $24,131 million and the ending balance was $23,811 million.\n\nSince depreciation expense is not provided, we can estimate the depreciation expense by subtracting the ending PP&E balance from the beginning PP&E balance:\n\nDepreciation expense = Beginning PP&E - Ending PP&E\n= $24,131 million - $23,811 million\n= $320 million\n\nNow, we can calculate the net PP&E by adding the PP&E and depreciation expense:\n\nNet PP&E = PP&E + Depreciation expense\n= $23,811 million + $320 million\n= $24,131 million\n\nHowever, this is the total PP&E, not the net PP&E. To calculate net PP&E, we need to subtract the accumulated depreciation from the total PP&E.",
+      "generation_length": 1035,
+      "generation_evaluation": {
+        "bleu": {
+          "bleu_1": 0.0,
+          "bleu_2": 0.0,
+          "bleu_3": 0.0,
+          "bleu_4": 0.0015405559305611467
+        },
+        "rouge": {
+          "rouge_1_precision": 0.0,
+          "rouge_1_recall": 0.0,
+          "rouge_1_f1": 0.0,
+          "rouge_2_precision": 0.0,
+          "rouge_2_recall": 0.0,
+          "rouge_2_f1": 0.0,
+          "rouge_l_precision": 0.0,
+          "rouge_l_recall": 0.0,
+          "rouge_l_f1": 0.0
+        }
+      },
+      "experiment_type": "closed_book"
+    },
+    {
+      "sample_id": 2,
+      "question": "Is 3M a capital-intensive business based on FY2022 data?",
+      "reference_answer": "No, the company is managing its CAPEX and Fixed Assets pretty efficiently, which is evident from below key metrics:\nCAPEX/Revenue Ratio: 5.1%\nFixed assets/Total Assets: 20%\nReturn on Assets= 12.4%",
+      "generated_answer": "According to 3M's FY2022 financial report, the company had:\n\n* Total assets: $35.3 billion\n* Total equity: $29.5 billion\n* Total debt: $5.5 billion\n\nBased on these numbers, 3M's debt-to-equity ratio is approximately 0.19, which is relatively low. This suggests that 3M is not overly leveraged and has a significant amount of equity to absorb any unexpected expenses or revenue shortfalls.\n\nIn terms of capital intensity, 3M's business model is not as capital-intensive as some other companies in the industrial or manufacturing sectors. This is because 3M generates significant revenue from a diverse range of products, including consumer goods, industrial, healthcare, and electronics. Additionally, the company has a strong track record of innovation and has been able to maintain a relatively low cost structure.\n\nThat being said, 3M does invest in research and development, which can be a significant expense. However, the company's revenue growth and profitability have been driven by a combination of organic growth and strategic acquisitions, which have helped to offset these costs.\n\nOverall, while 3M is not a low-capital business, it is not excessively capital-intensive either. The company's balance sheet and",
+      "generation_length": 1220,
+      "generation_evaluation": {
+        "bleu": {
+          "bleu_1": 0.0663265306122449,
+          "bleu_2": 0.015384615384615385,
+          "bleu_3": 0.0,
+          "bleu_4": 0.01303604611727296
+        },
+        "rouge": {
+          "rouge_1_precision": 0.0663265306122449,
+          "rouge_1_recall": 0.38235294117647056,
+          "rouge_1_f1": 0.11304347826086956,
+          "rouge_2_precision": 0.015384615384615385,
+          "rouge_2_recall": 0.09090909090909091,
+          "rouge_2_f1": 0.026315789473684213,
+          "rouge_l_precision": 0.03571428571428571,
+          "rouge_l_recall": 0.20588235294117646,
+          "rouge_l_f1": 0.0608695652173913
+        }
+      },
+      "experiment_type": "closed_book"
+    },
+    {
+      "sample_id": 3,
+      "question": "What drove operating margin change as of FY2022 for 3M? If operating margin is not a useful metric for a company like this, then please state that and explain why.",
+      "reference_answer": "Operating Margin for 3M in FY2022 has decreased by 1.7% primarily due to: \n-Decrease in gross Margin\n-mostly one-off charges including Combat Arms Earplugs litigation, impairment related to exiting PFAS manufacturing, costs related to exiting Russia and divestiture-related restructuring\ncharges",
+      "generated_answer": "As of FY2022, 3M reported a net operating margin of 24.6% and a gross margin of 43.9%.\n\nAccording to 3M's annual report, the operating margin increased from 22.2% in FY2021 to 24.6% in FY2022. The main driver of this increase was the improvement in gross margin, which rose from 42.9% in FY2021 to 43.9% in FY2022. This increase in gross margin was driven by the company's efforts to optimize its supply chain, reduce costs, and increase pricing power.\n\nAs for whether operating margin is a useful metric for a company like 3M, it can be a useful metric in certain contexts. However, it may not be the most useful metric for several reasons:\n\n1. **It doesn't capture all costs**: Operating margin only looks at the difference between revenue and operating expenses, and does not account for other costs such as interest expenses, taxes, and capital expenditures.\n2. **It may not reflect underlying business performance**: Operating margin can be influenced by one-time events, such as changes in accounting policies or significant write-offs, which can distort the picture of the company's underlying business performance.\n3. **",
+      "generation_length": 1128,
+      "generation_evaluation": {
+        "bleu": {
+          "bleu_1": 0.08717948717948718,
+          "bleu_2": 0.020618556701030927,
+          "bleu_3": 0.0051813471502590676,
+          "bleu_4": 0.0064531639669164805
+        },
+        "rouge": {
+          "rouge_1_precision": 0.09230769230769231,
+          "rouge_1_recall": 0.4186046511627907,
+          "rouge_1_f1": 0.15126050420168072,
+          "rouge_2_precision": 0.020618556701030927,
+          "rouge_2_recall": 0.09523809523809523,
+          "rouge_2_f1": 0.03389830508474576,
+          "rouge_l_precision": 0.06153846153846154,
+          "rouge_l_recall": 0.27906976744186046,
+          "rouge_l_f1": 0.1008403361344538
+        }
+      },
+      "experiment_type": "closed_book"
+    },
+    {
+      "sample_id": 4,
+      "question": "If we exclude the impact of M&A, which segment has dragged down 3M's overall growth in 2022?",
+      "reference_answer": "The consumer segment shrunk by 0.9% organically.",
+      "generated_answer": "I don't have have access to real-time data or specific financial reports, but I can provide general information on 3M's segments. \n\nAs of my last update, 3M is a multinational conglomerate with several business segments that contribute to its overall revenue. The company's main segments include:\n\n1. Industrial segment, which includes products such as adhesives, abrasives, and electronic materials.\n2. Consumer segment, which includes household and personal care products.\n3. Health Care segment, which includes medical supplies and devices.\n4. Electronics & Energy segment, which includes electronic components, circuit protection, and other electronic products.\n\nHowever, I couldn't find any information that suggests one segment has dragged down 3M's overall growth in 2022. In fact, 3M has generally reported steady growth across its segments, with some fluctuations.\n\nIf you're looking for more specific information, I recommend checking 3M's official investor relations website or recent financial reports for the most up-to-date information on their segments' performance.",
+      "generation_length": 1081,
+      "generation_evaluation": {
+        "bleu": {
+          "bleu_1": 0.018404907975460124,
+          "bleu_2": 0.006172839506172839,
+          "bleu_3": 0.0,
+          "bleu_4": 0.0025779022493107617
+        },
+        "rouge": {
+          "rouge_1_precision": 0.018404907975460124,
+          "rouge_1_recall": 0.375,
+          "rouge_1_f1": 0.03508771929824561,
+          "rouge_2_precision": 0.006172839506172839,
+          "rouge_2_recall": 0.14285714285714285,
+          "rouge_2_f1": 0.011834319526627219,
+          "rouge_l_precision": 0.018404907975460124,
+          "rouge_l_recall": 0.375,
+          "rouge_l_f1": 0.03508771929824561
+        }
+      },
+      "experiment_type": "closed_book"
+    }
+  ]
+}

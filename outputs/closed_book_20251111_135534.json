@@ -1,0 +1,156 @@
+{
+  "metadata": {
+    "experiment_type": "closed_book",
+    "llm_model": "Qwen/Qwen2.5-7B-Instruct",
+    "use_api": false,
+    "api_base_url": null,
+    "judge_model": null,
+    "chunk_size": 512,
+    "chunk_overlap": 50,
+    "top_k": 3,
+    "embedding_model": "sentence-transformers/all-MiniLM-L6-v2",
+    "device": "cuda",
+    "load_in_8bit": true,
+    "max_new_tokens": 256,
+    "timestamp": "2025-11-11T13:52:20.625272"
+  },
+  "num_samples": 5,
+  "framework": "LangChain + FAISS",
+  "results": [
+    {
+      "sample_id": 0,
+      "question": "What is the FY2018 capital expenditure amount (in USD millions) for 3M? Give a response to the question by relying on the details shown in the cash flow statement.",
+      "reference_answer": "$1577.00",
+      "generated_answer": "To provide the exact FY2018 capital expenditure amount for 3M, I would need to refer to their cash flow statement from that specific year. According to 3M's 2018 annual report, the capital expenditures reported were $1,532 million. This figure can typically be found under the \"Cash Flows from Investing Activities\" section of the cash flow statement.",
+      "generation_length": 351,
+      "generation_evaluation": {
+        "bleu": {
+          "bleu_1": 0.0,
+          "bleu_2": 0.0,
+          "bleu_3": 0.0,
+          "bleu_4": 0.0056577596562095355
+        },
+        "rouge": {
+          "rouge_1_precision": 0.0,
+          "rouge_1_recall": 0.0,
+          "rouge_1_f1": 0.0,
+          "rouge_2_precision": 0.0,
+          "rouge_2_recall": 0.0,
+          "rouge_2_f1": 0.0,
+          "rouge_l_precision": 0.0,
+          "rouge_l_recall": 0.0,
+          "rouge_l_f1": 0.0
+        }
+      },
+      "experiment_type": "closed_book"
+    },
+    {
+      "sample_id": 1,
+      "question": "Assume that you are a public equities analyst. Answer the following question by primarily using information that is shown in the balance sheet: what is the year end FY2018 net PPNE for 3M? Answer in USD billions.",
+      "reference_answer": "$8.70",
+      "generated_answer": "To determine the Net Property, Plant, and Equipment (PP&E) for 3M at the end of fiscal year 2018, we need to look at the balance sheet. Specifically, we would subtract accumulated depreciation from the Gross PP&E.\n\nFrom 3M's fiscal year 2018 balance sheet:\n- Gross PP&E: $10.5 billion\n- Accumulated Depreciation: $6.7 billion\n\nNet PP&E = Gross PP&E - Accumulated Depreciation\nNet PP&E = $10.5 billion - $6.7 billion = $3.8 billion\n\nTherefore, the net PP&E for 3M at the end of fiscal year 2018 was $3.8 billion, or $3.8 billion in USD billions.",
+      "generation_length": 544,
+      "generation_evaluation": {
+        "bleu": {
+          "bleu_1": 0.00980392156862745,
+          "bleu_2": 0.0,
+          "bleu_3": 0.0,
+          "bleu_4": 0.002773074389733541
+        },
+        "rouge": {
+          "rouge_1_precision": 0.00980392156862745,
+          "rouge_1_recall": 0.5,
+          "rouge_1_f1": 0.019230769230769232,
+          "rouge_2_precision": 0.0,
+          "rouge_2_recall": 0.0,
+          "rouge_2_f1": 0.0,
+          "rouge_l_precision": 0.00980392156862745,
+          "rouge_l_recall": 0.5,
+          "rouge_l_f1": 0.019230769230769232
+        }
+      },
+      "experiment_type": "closed_book"
+    },
+    {
+      "sample_id": 2,
+      "question": "Is 3M a capital-intensive business based on FY2022 data?",
+      "reference_answer": "No, the company is managing its CAPEX and Fixed Assets pretty efficiently, which is evident from below key metrics:\nCAPEX/Revenue Ratio: 5.1%\nFixed assets/Total Assets: 20%\nReturn on Assets= 12.4%",
+      "generated_answer": "To determine if 3M is a capital-intensive business based on fiscal year 2022 data, we would typically look at metrics such as the ratio of total assets to sales or total equity, the amount of fixed assets relative to operating income, and the capital expenditures as a percentage of sales.\n\nAs of my last update, without specific financial data from 3M's 10-K report for FY2022, I cannot provide exact figures. However, generally, companies in industries like manufacturing, construction, and heavy machinery tend to be more capital-intensive due to the need for significant investments in equipment, property, and infrastructure.\n\n3M is known for its diversified product portfolio which includes adhesives, safety products, medical devices, and electronics. Given this broad range and the nature of many of its products, it could reasonably be considered moderately capital-intensive compared to purely service-based companies. For precise analysis, you should review 3M\u2019s latest annual report and financial statements.",
+      "generation_length": 1020,
+      "generation_evaluation": {
+        "bleu": {
+          "bleu_1": 0.0880503144654088,
+          "bleu_2": 0.012658227848101266,
+          "bleu_3": 0.0,
+          "bleu_4": 0.006342146909213475
+        },
+        "rouge": {
+          "rouge_1_precision": 0.09433962264150944,
+          "rouge_1_recall": 0.4411764705882353,
+          "rouge_1_f1": 0.15544041450777205,
+          "rouge_2_precision": 0.012658227848101266,
+          "rouge_2_recall": 0.06060606060606061,
+          "rouge_2_f1": 0.02094240837696335,
+          "rouge_l_precision": 0.03773584905660377,
+          "rouge_l_recall": 0.17647058823529413,
+          "rouge_l_f1": 0.062176165803108814
+        }
+      },
+      "experiment_type": "closed_book"
+    },
+    {
+      "sample_id": 3,
+      "question": "What drove operating margin change as of FY2022 for 3M? If operating margin is not a useful metric for a company like this, then please state that and explain why.",
+      "reference_answer": "Operating Margin for 3M in FY2022 has decreased by 1.7% primarily due to: \n-Decrease in gross Margin\n-mostly one-off charges including Combat Arms Earplugs litigation, impairment related to exiting PFAS manufacturing, costs related to exiting Russia and divestiture-related restructuring\ncharges",
+      "generated_answer": "To provide a specific answer about the drivers of the operating margin change for 3M in fiscal year 2022 (FY2022), I would need to refer to 3M's annual report or press releases from that period. However, generally speaking, factors that can drive changes in operating margins include:\n\n1. **Revenue Growth**: Increase in sales can improve margins if cost increases are controlled.\n2. **Cost Control**: Effective management of raw materials, labor, and overhead costs.\n3. **Product Mix**: Changes in the mix of high-margin versus low-margin products sold.\n4. **Operational Efficiency**: Improvements in manufacturing processes, supply chain management, and other operational efficiencies.\n5. **Acquisitions and Disposals**: The impact of any recent acquisitions or divestitures on overall margins.\n6. **Taxation**: Changes in tax laws or rates can affect reported margins.\n\nIf operating margin is not a useful metric for a company like 3M, it could be due to several reasons:\n- **Diverse Product Portfolio**: 3M operates across multiple industries with different profit margins, making operating margin less indicative of overall performance.\n- **Research and Development Intensity**: High investment in R&D can lead to lower short-term margins",
+      "generation_length": 1243,
+      "generation_evaluation": {
+        "bleu": {
+          "bleu_1": 0.08602150537634409,
+          "bleu_2": 0.021621621621621623,
+          "bleu_3": 0.005434782608695652,
+          "bleu_4": 0.008694452216917364
+        },
+        "rouge": {
+          "rouge_1_precision": 0.0967741935483871,
+          "rouge_1_recall": 0.4186046511627907,
+          "rouge_1_f1": 0.1572052401746725,
+          "rouge_2_precision": 0.021621621621621623,
+          "rouge_2_recall": 0.09523809523809523,
+          "rouge_2_f1": 0.035242290748898675,
+          "rouge_l_precision": 0.06989247311827956,
+          "rouge_l_recall": 0.3023255813953488,
+          "rouge_l_f1": 0.11353711790393013
+        }
+      },
+      "experiment_type": "closed_book"
+    },
+    {
+      "sample_id": 4,
+      "question": "If we exclude the impact of M&A, which segment has dragged down 3M's overall growth in 2022?",
+      "reference_answer": "The consumer segment shrunk by 0.9% organically.",
+      "generated_answer": "To accurately answer this question, I would need to refer to 3M's financial reports for 2022. However, based on typical trends and common issues faced by large corporations, segments that often drag down overall growth include:\n\n1. **Health Care**: If there were significant declines in sales or margins within this segment.\n2. **Safety & Industrial**: This could be affected by economic downturns or industry-specific challenges.\n3. **Consumer**: Changes in consumer behavior or market conditions could impact sales.\n\nWithout specific data from 3M's 2022 financial statements, it's difficult to pinpoint exactly which segment was impacted. For precise information, reviewing 3M's annual report or earnings press release for 2022 would be necessary.",
+      "generation_length": 749,
+      "generation_evaluation": {
+        "bleu": {
+          "bleu_1": 0.02631578947368421,
+          "bleu_2": 0.0,
+          "bleu_3": 0.0,
+          "bleu_4": 0.003610225936739799
+        },
+        "rouge": {
+          "rouge_1_precision": 0.02631578947368421,
+          "rouge_1_recall": 0.375,
+          "rouge_1_f1": 0.04918032786885246,
+          "rouge_2_precision": 0.0,
+          "rouge_2_recall": 0.0,
+          "rouge_2_f1": 0.0,
+          "rouge_l_precision": 0.017543859649122806,
+          "rouge_l_recall": 0.25,
+          "rouge_l_f1": 0.03278688524590164
+        }
+      },
+      "experiment_type": "closed_book"
+    }
+  ]
+}
