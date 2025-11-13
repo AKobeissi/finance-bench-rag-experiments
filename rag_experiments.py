@@ -632,6 +632,43 @@ class RAGExperiment:
         
         return retrieved
     
+    def _normalize_evidence(self, evidence: Any) -> List[str]:
+        """
+        Normalize evidence payloads from the dataset into a list of clean strings.
+        
+        FinanceBench evidence may be a string, list/tuple of strings, bytes, or nested structures.
+        This helper flattens and decodes everything into a list of non-empty strings.
+        """
+        normalized: List[str] = []
+        
+        if evidence is None:
+            return normalized
+        
+        # Recursively flatten iterables
+        if isinstance(evidence, (list, tuple, set)):
+            for item in evidence:
+                normalized.extend(self._normalize_evidence(item))
+            return normalized
+        
+        if isinstance(evidence, dict):
+            for item in evidence.values():
+                normalized.extend(self._normalize_evidence(item))
+            return normalized
+        
+        if isinstance(evidence, (bytes, bytearray)):
+            try:
+                text = evidence.decode('utf-8')
+            except Exception:
+                text = evidence.decode('utf-8', errors='replace')
+        else:
+            text = str(evidence)
+        
+        text = text.strip()
+        if text:
+            normalized.append(text)
+        
+        return normalized
+      
     def _generate_answer(self, question: str, context: str = None) -> str:
         """
         Generate answer using HuggingFace LLM (Llama 3.2 3B or Qwen 2.5 7B)
@@ -843,13 +880,14 @@ Question: {question}<|im_end|>
             self.logger.info(f"Samples: {len(samples)}")
             self.logger.info(f"{'='*80}")
             
-            # Get document content from first sample's evidence, coerce bytes to str
-            doc_content = samples[0].get('evidence', '')
-            if isinstance(doc_content, (bytes, bytearray)):
-                try:
-                    doc_content = doc_content.decode('utf-8')
-                except Exception:
-                    doc_content = doc_content.decode('utf-8', errors='replace')
+            # Aggregate evidence from all samples under this document
+            doc_segments: List[str] = []
+            for sample in samples:
+                doc_segments.extend(self._normalize_evidence(sample.get('evidence')))
+            
+            # Deduplicate while preserving order
+            unique_segments = list(dict.fromkeys(doc_segments))
+            doc_content = "\n\n".join(unique_segments).strip()
             
             if not doc_content:
                 self.logger.warning(f"No content available for document: {doc_name}")
@@ -870,12 +908,8 @@ Question: {question}<|im_end|>
                 
                 question = sample['question']
                 reference_answer = sample['answer']
-                gold_evidence = sample.get('evidence', '')
-                if isinstance(gold_evidence, (bytes, bytearray)):
-                    try:
-                        gold_evidence = gold_evidence.decode('utf-8')
-                    except Exception:
-                        gold_evidence = gold_evidence.decode('utf-8', errors='replace')
+                gold_evidence_segments = self._normalize_evidence(sample.get('evidence'))
+                gold_evidence = "\n\n".join(gold_evidence_segments)
                 
                 # Retrieve relevant chunks using FAISS
                 retrieved_chunks = self._retrieve_chunks_faiss(question, vector_store)
