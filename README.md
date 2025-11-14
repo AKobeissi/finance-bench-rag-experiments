@@ -390,12 +390,6 @@ Contributions welcome! Areas for improvement:
 
 ---
 
-## 📄 License
-
-[Add your license information here]
-
----
-
 ## 🙏 Acknowledgments
 
 - FinanceBench dataset by PatronusAI
@@ -407,4 +401,4 @@ Contributions welcome! Areas for improvement:
 
 ## 📧 Contact
 
-[Add your contact information or link to issues page]
+amine.kobeissi[at]umontreal.ca
