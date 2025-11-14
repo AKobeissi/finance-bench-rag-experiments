@@ -17,10 +17,8 @@ This project implements and evaluates multiple RAG strategies for answering fina
 
 ✅ Modular architecture with pluggable experiment types  
 ✅ Comprehensive evaluation: BLEU, ROUGE, BERTScore, Exact Match, F1, Recall@K  
-✅ Graceful handling of missing data (skipped samples tracked)  
 ✅ PDF text extraction for real-world document retrieval  
 ✅ JSON output format for easy analysis and visualization  
-✅ Defensive programming to avoid common pandas/numpy pitfalls
 
 ---
 
