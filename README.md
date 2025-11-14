@@ -1,3 +1,5 @@
+***WORK IN PROGRESS***
+
 # FinanceBench RAG Experiments
 
 A modular framework for evaluating Retrieval-Augmented Generation (RAG) systems on financial question-answering using the FinanceBench dataset.
