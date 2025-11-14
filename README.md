@@ -354,31 +354,6 @@ for result in poor_results:
 
 ---
 
-## 🐛 Troubleshooting
-
-### Common Issues
-
-**"Truth value of array is ambiguous" error:**
-- This occurs with boolean checks on pandas Series/numpy arrays
-- Solution: Use `.notna()`, `.isna()`, or explicit length checks
-- The codebase handles this defensively
-
-**Missing evaluation packages:**
-- Install optional packages: `pip install sacrebleu rouge-score bert-score`
-- Or disable in config: `config.use_bertscore = False`
-- Evaluator will gracefully fall back to available metrics
-
-**PDF loading failures:**
-- Ensure `doc_link` URLs are accessible
-- Check network connectivity
-- Verify PDF extraction dependencies installed
-
-**FAISS index errors:**
-- Ensure embeddings dimension matches (default: 384 for MiniLM)
-- Check that documents list is not empty before indexing
-
----
-
 ## 📚 Dataset Information
 
 ### FinanceBench Dataset
