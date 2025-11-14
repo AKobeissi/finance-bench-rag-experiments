@@ -134,6 +134,19 @@ if not _HAS_LANGCHAIN:
 
 # HuggingFace transformers for LLM
 from transformers import AutoTokenizer, AutoModelForCausalLM, pipeline
+import io
+import hashlib
+
+# Optional PDF fetching/parsing
+try:
+    import requests
+except Exception:
+    requests = None
+
+try:
+    import PyPDF2
+except Exception:
+    PyPDF2 = None
 
 # Import local modules (support running as script or as package)
 try:
@@ -171,10 +184,50 @@ except Exception:
             logging.getLogger(__name__).exception(f"Dynamic import fallback failed: {e2}")
             raise
 
+# Import modular experiment runners (keeps main file small and easier to maintain)
+try:
+    from finance_bench.rag_closed_book import run_closed_book as _run_closed_book
+    from finance_bench.rag_single_vector import run_single_vector as _run_single_vector
+    from finance_bench.rag_shared_vector import run_shared_vector as _run_shared_vector
+    from finance_bench.rag_open_book import run_open_book as _run_open_book
+except Exception:
+    # If package-style import fails (e.g., running as script), try local imports
+    try:
+        from .rag_closed_book import run_closed_book as _run_closed_book
+        from .rag_single_vector import run_single_vector as _run_single_vector
+        from .rag_shared_vector import run_shared_vector as _run_shared_vector
+        from .rag_open_book import run_open_book as _run_open_book
+    except Exception:
+            # As a last resort, try dynamic import by file path so the script can be
+            # executed both as a package and as a standalone script from the project root.
+            try:
+                import importlib.util
+                base_dir = Path(__file__).resolve().parent
+
+                def _load_runner(path: Path, name: str):
+                    spec = importlib.util.spec_from_file_location(name, str(path))
+                    mod = importlib.util.module_from_spec(spec)
+                    spec.loader.exec_module(mod)  # type: ignore
+                    return mod
+
+                _run_closed_book = _load_runner(base_dir / 'rag_closed_book.py', 'rag_closed_book').run_closed_book
+                _run_single_vector = _load_runner(base_dir / 'rag_single_vector.py', 'rag_single_vector').run_single_vector
+                _run_shared_vector = _load_runner(base_dir / 'rag_shared_vector.py', 'rag_shared_vector').run_shared_vector
+                _run_open_book = _load_runner(base_dir / 'rag_open_book.py', 'rag_open_book').run_open_book
+            except Exception:
+                # If even dynamic loading fails, set to None and let callers raise clearer errors
+                _run_closed_book = None
+                _run_single_vector = None
+                _run_shared_vector = None
+                _run_open_book = None
+
 
 # Set up logging
-def setup_logging(experiment_name: str, log_dir: str = "logs"):
+def setup_logging(experiment_name: str, log_dir: Optional[str] = None):
     """Setup comprehensive logging"""
+    if log_dir is None:
+        base_dir = Path(__file__).resolve().parent
+        log_dir = str(base_dir / "logs")
     os.makedirs(log_dir, exist_ok=True)
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     log_file = f"{log_dir}/{experiment_name}_{timestamp}.log"
@@ -227,8 +280,9 @@ class RAGExperiment:
                  embedding_model: str = "sentence-transformers/all-MiniLM-L6-v2",
                  use_bertscore: bool = False,
                  use_llm_judge: bool = False,
-                 output_dir: str = "outputs",
-                 vector_store_dir: str = "vector_stores",
+                 output_dir: Optional[str] = None,
+                 vector_store_dir: Optional[str] = None,
+                 pdf_local_dir: Optional[str] = None,
                  device: str = None,
                  load_in_8bit: bool = True,
                  max_new_tokens: int = 256,
@@ -249,8 +303,8 @@ class RAGExperiment:
             use_bertscore: Whether to use BERTScore
             use_llm_judge: Whether to use LLM as judge
             output_dir: Directory for outputs
-            vector_store_dir: Directory for vector store persistence
-            device: Device to use ('cuda' or 'cpu'). Auto-detected if None.
+            output_dir: Directory for outputs (default: "outputs")
+            vector_store_dir: Directory for vector store persistence (default: "vector_stores")
             load_in_8bit: Whether to load models in 8-bit for memory efficiency
             max_new_tokens: Maximum tokens to generate
         """
@@ -262,8 +316,21 @@ class RAGExperiment:
         self.top_k = top_k
         self.embedding_model = embedding_model
         self.output_dir = output_dir
+        base_dir = Path(__file__).resolve().parent
+        if output_dir is None:
+            output_dir = str(base_dir / "outputs")
+        if vector_store_dir is None:
+            vector_store_dir = str(base_dir / "vector_stores")
+        self.output_dir = output_dir
         self.vector_store_dir = vector_store_dir
-        self.max_new_tokens = max_new_tokens
+        # Local PDF directory: prefer this for PDF extraction if available
+        # Default to the package-local `finance_bench/pdfs` directory so that
+        # uploaded PDFs inside the package are preferred.
+        if pdf_local_dir is None:
+            # default to finance_bench/pdfs (inside the package)
+            self.pdf_local_dir = Path(base_dir) / "pdfs"
+        else:
+            self.pdf_local_dir = Path(pdf_local_dir)
         self.load_in_8bit = load_in_8bit
         self.use_api = use_api
         self.api_base_url = api_base_url
@@ -295,7 +362,9 @@ class RAGExperiment:
         self.embeddings = None
         self.text_splitter = None
         self.vector_stores = {}
-        
+        # Persist generation config on the instance
+        self.max_new_tokens = max_new_tokens
+
         # Results storage
         self.results = []
         self.experiment_metadata = {
@@ -311,11 +380,13 @@ class RAGExperiment:
             'device': self.device,
             'load_in_8bit': load_in_8bit,
             'max_new_tokens': max_new_tokens,
+            'pdf_local_dir': str(self.pdf_local_dir) if self.pdf_local_dir is not None else None,
             'timestamp': datetime.now().isoformat()
         }
-        
-        os.makedirs(output_dir, exist_ok=True)
-        os.makedirs(vector_store_dir, exist_ok=True)
+
+        # Ensure output and vector store directories exist
+        os.makedirs(self.output_dir, exist_ok=True)
+        os.makedirs(self.vector_store_dir, exist_ok=True)
         
         self.logger.info("=" * 80)
         self.logger.info(f"INITIALIZING RAG EXPERIMENT: {experiment_type.upper()}")
@@ -546,6 +617,72 @@ class RAGExperiment:
             self.logger.debug(f"    Metadata: {doc.metadata}")
         
         return documents
+
+    def _normalize_evidence(self, evidence: Any) -> List[str]:
+        """
+        Normalize the dataset's `evidence` field into a list of text strings.
+
+        Supported input types:
+        - None -> []
+        - str -> [str]
+        - bytes/bytearray -> [decoded str]
+        - list/tuple of str/bytes -> list of str
+        - numpy arrays containing strings/bytes -> list of str
+        - fallback: cast to str and return single-item list
+        """
+        parts: List[str] = []
+        if evidence is None:
+            return parts
+
+        # bytes
+        if isinstance(evidence, (bytes, bytearray)):
+            try:
+                parts.append(evidence.decode('utf-8'))
+            except Exception:
+                parts.append(evidence.decode('utf-8', errors='replace'))
+            return parts
+
+        # string
+        if isinstance(evidence, str):
+            return [evidence]
+
+        # numpy arrays
+        try:
+            import numpy as _np
+            if isinstance(evidence, _np.ndarray):
+                for v in evidence.tolist():
+                    if isinstance(v, (bytes, bytearray)):
+                        try:
+                            parts.append(v.decode('utf-8'))
+                        except Exception:
+                            parts.append(v.decode('utf-8', errors='replace'))
+                    elif v is None:
+                        continue
+                    else:
+                        parts.append(str(v))
+                return [p for p in parts if p]
+        except Exception:
+            pass
+
+        # iterable (list/tuple)
+        if isinstance(evidence, (list, tuple)):
+            for v in evidence:
+                if v is None:
+                    continue
+                if isinstance(v, (bytes, bytearray)):
+                    try:
+                        parts.append(v.decode('utf-8'))
+                    except Exception:
+                        parts.append(v.decode('utf-8', errors='replace'))
+                else:
+                    parts.append(str(v))
+            return [p for p in parts if p]
+
+        # fallback: stringify
+        try:
+            return [str(evidence)]
+        except Exception:
+            return []
     
     def _create_vector_store_faiss(self, documents: List[Document], index_name: str = "default") -> FAISS:
         """
@@ -574,25 +711,24 @@ class RAGExperiment:
         self.logger.info(f"✓ Vector store saved to: {vector_store_path}")
         
         return vector_store
-    
-    def _retrieve_chunks_faiss(self, query: str, vector_store: FAISS, top_k: int = None) -> List[Dict[str, Any]]:
+
+    def _retrieve_chunks_faiss(self, query: str, vector_store: FAISS, top_k: Optional[int] = None) -> List[Dict[str, Any]]:
         """
         Retrieve most relevant chunks using FAISS
-        
+
         Args:
             query: Query text
             vector_store: FAISS vector store
             top_k: Number of chunks to retrieve
-            
+
         Returns:
             List of retrieved chunks with scores and metadata
         """
         if top_k is None:
             top_k = self.top_k
-        
-        self.logger.info(f"\nRetrieving top-{top_k} chunks for query: {query[:100]}...")
-        
-        # Use LangChain's similarity_search_with_score
+
+        self.logger.info(f"\nRetrieving top-{top_k} chunks for query: {str(query)[:100]}...")
+
         # Ensure query is a str
         if isinstance(query, (bytes, bytearray)):
             try:
@@ -600,494 +736,432 @@ class RAGExperiment:
             except Exception:
                 query = query.decode('utf-8', errors='replace')
 
-        results = vector_store.similarity_search_with_score(query, k=top_k)
-        
-        # Format results
-        retrieved = []
-        for rank, (doc, score) in enumerate(results):
-            # Defensive: ensure doc.page_content is a string
-            text_content = doc.page_content
-            if isinstance(text_content, (bytes, bytearray)):
-                try:
-                    text_content = text_content.decode('utf-8')
-                except Exception:
-                    text_content = text_content.decode('utf-8', errors='replace')
+        if vector_store is None:
+            self.logger.warning("_retrieve_chunks_faiss called with None vector_store")
+            return []
 
-            chunk_data = {
-                'rank': rank + 1,
-                'text': text_content,
-                'score': float(score),
-                'length': len(text_content),
-                'metadata': doc.metadata
-            }
-            retrieved.append(chunk_data)
-        
-        # Log retrieved chunks
-        self.logger.info(f"Retrieved {len(retrieved)} chunks:")
-        for chunk in retrieved:
-            self.logger.info(f"  Rank {chunk['rank']}: Score={chunk['score']:.4f}, "
-                           f"Length={chunk['length']} chars")
-            self.logger.info(f"    Metadata: {chunk['metadata']}")
-            self.logger.info(f"    Text preview: {chunk['text'][:150]}...")
-        
-        return retrieved
-    
+        try:
+            # Primary: use similarity_search_with_score if available
+            if hasattr(vector_store, 'similarity_search_with_score'):
+                results = vector_store.similarity_search_with_score(query, k=top_k)
+                retrieved = []
+                for rank, (doc, score) in enumerate(results):
+                    text_content = getattr(doc, 'page_content', None) or getattr(doc, 'content', None) or str(doc)
+                    if isinstance(text_content, (bytes, bytearray)):
+                        try:
+                            text_content = text_content.decode('utf-8')
+                        except Exception:
+                            text_content = text_content.decode('utf-8', errors='replace')
+
+                    chunk_data = {
+                        'rank': rank + 1,
+                        'text': text_content,
+                        'score': float(score),
+                        'length': len(text_content),
+                        'metadata': getattr(doc, 'metadata', {}) or {}
+                    }
+                    retrieved.append(chunk_data)
+
+                # Log retrieved chunks
+                self.logger.info(f"Retrieved {len(retrieved)} chunks:")
+                for chunk in retrieved:
+                    self.logger.info(f"  Rank {chunk['rank']}: Score={chunk['score']:.4f}, Length={chunk['length']} chars")
+                    self.logger.info(f"    Metadata: {chunk['metadata']}")
+                    self.logger.info(f"    Text preview: {chunk['text'][:150]}...")
+
+                return retrieved
+
+            # Fallback: similarity_search (no scores)
+            if hasattr(vector_store, 'similarity_search'):
+                docs = vector_store.similarity_search(query, k=top_k)
+                retrieved = []
+                for rank, doc in enumerate(docs):
+                    text_content = getattr(doc, 'page_content', None) or getattr(doc, 'content', None) or str(doc)
+                    if isinstance(text_content, (bytes, bytearray)):
+                        try:
+                            text_content = text_content.decode('utf-8')
+                        except Exception:
+                            text_content = text_content.decode('utf-8', errors='replace')
+
+                    chunk_data = {
+                        'rank': rank + 1,
+                        'text': text_content,
+                        'score': None,
+                        'length': len(text_content),
+                        'metadata': getattr(doc, 'metadata', {}) or {}
+                    }
+                    retrieved.append(chunk_data)
+
+                self.logger.info(f"Retrieved {len(retrieved)} chunks (no scores):")
+                for chunk in retrieved:
+                    self.logger.info(f"  Rank {chunk['rank']}: Length={chunk['length']} chars")
+                    self.logger.info(f"    Metadata: {chunk['metadata']}")
+                    self.logger.info(f"    Text preview: {chunk['text'][:150]}...")
+
+                return retrieved
+
+            # As a last resort, try a generic 'search' method
+            if hasattr(vector_store, 'search'):
+                try:
+                    docs = vector_store.search(query, k=top_k)
+                    retrieved = []
+                    for rank, item in enumerate(docs):
+                        if isinstance(item, tuple) and len(item) == 2:
+                            doc, score = item
+                        else:
+                            doc, score = item, None
+
+                        text_content = getattr(doc, 'page_content', None) or getattr(doc, 'content', None) or str(doc)
+                        if isinstance(text_content, (bytes, bytearray)):
+                            try:
+                                text_content = text_content.decode('utf-8')
+                            except Exception:
+                                text_content = text_content.decode('utf-8', errors='replace')
+
+                        chunk_data = {
+                            'rank': rank + 1,
+                            'text': text_content,
+                            'score': float(score) if score is not None else None,
+                            'length': len(text_content),
+                            'metadata': getattr(doc, 'metadata', {}) or {}
+                        }
+                        retrieved.append(chunk_data)
+
+                    self.logger.info(f"Retrieved {len(retrieved)} chunks (via generic search):")
+                    for chunk in retrieved:
+                        self.logger.info(f"  Rank {chunk['rank']}: Score={chunk['score']}, Length={chunk['length']} chars")
+                        self.logger.info(f"    Metadata: {chunk['metadata']}")
+                        self.logger.info(f"    Text preview: {chunk['text'][:150]}...")
+
+                    return retrieved
+                except Exception:
+                    pass
+
+            raise RuntimeError('Vector store does not support similarity search API')
+
+        except Exception as e:
+            self.logger.error(f"Failed to retrieve chunks from FAISS: {e}")
+            return []
+
+    def _load_pdf_text(self, url: str, timeout: int = 20, force_refresh: bool = False) -> Optional[str]:
+        """
+        Fetch PDF from URL and extract text. Returns None if fetching or parsing fails.
+
+        This helper prefers PyPDF2 (pure-python). If `requests` or `PyPDF2` are
+        not available, this function logs and returns None so callers can fall back
+        to using the `evidence` field from the dataset.
+        """
+        if not url:
+            return None
+
+        if requests is None:
+            self.logger.warning("requests not available; cannot fetch PDF from URL")
+            return None
+
+        if PyPDF2 is None:
+            self.logger.warning("PyPDF2 not available; install it to extract PDF text")
+            return None
+
+        # Prepare cache location (under vector_store_dir/pdf_text_cache)
+        cache_dir = os.path.join(self.vector_store_dir, 'pdf_text_cache')
+        try:
+            os.makedirs(cache_dir, exist_ok=True)
+        except Exception:
+            # If we cannot create cache dir, continue without caching
+            cache_dir = None
+
+        # Use a deterministic filename derived from the URL hash
+        try:
+            url_hash = hashlib.sha256(url.encode('utf-8')).hexdigest()
+            cache_path = os.path.join(cache_dir, f"{url_hash}.txt") if cache_dir else None
+        except Exception:
+            cache_path = None
+
+        if PyPDF2 is None:
+            self.logger.warning("PyPDF2 not available; install it to extract PDF text")
+            return None
+
+        # Prepare cache location (under vector_store_dir/pdf_text_cache)
+        cache_dir = os.path.join(self.vector_store_dir, 'pdf_text_cache')
+        try:
+            os.makedirs(cache_dir, exist_ok=True)
+        except Exception:
+            cache_dir = None
+
+        # Helper: attempt to read PDF from a local path
+        def _read_local_pdf(path: Path) -> Optional[str]:
+            try:
+                if not path.exists():
+                    return None
+                # Use a cache key derived from the absolute path
+                try:
+                    key = hashlib.sha256(str(path.resolve()).encode('utf-8')).hexdigest()
+                    local_cache = os.path.join(cache_dir, f"{key}.txt") if cache_dir else None
+                except Exception:
+                    local_cache = None
+
+                # Return cached text if present
+                if local_cache and not force_refresh and os.path.exists(local_cache):
+                    try:
+                        with open(local_cache, 'r', encoding='utf-8') as f:
+                            cached = f.read()
+                        if cached:
+                            self.logger.info(f"Loaded cached PDF text for local file: {path}")
+                            return cached
+                    except Exception:
+                        pass
+
+                with open(path, 'rb') as fh:
+                    reader = PyPDF2.PdfReader(fh)
+                    texts = []
+                    for page in reader.pages:
+                        try:
+                            page_text = page.extract_text() or ""
+                        except Exception:
+                            page_text = ""
+                        texts.append(page_text)
+                full_text = "\n\n".join([t for t in texts if t])
+                if full_text and local_cache:
+                    try:
+                        tmp = local_cache + ".tmp"
+                        with open(tmp, 'w', encoding='utf-8') as f:
+                            f.write(full_text)
+                        os.replace(tmp, local_cache)
+                        self.logger.info(f"Cached PDF text to: {local_cache}")
+                    except Exception:
+                        pass
+                return full_text if full_text else None
+            except Exception as e:
+                self.logger.warning(f"Failed to read local PDF {path}: {e}")
+                return None
+
+        # 1) If url is a local path or file:// URL, try to read it directly
+        try:
+            if url and (url.startswith('file://') or os.path.exists(url)):
+                local_path = Path(url.replace('file://', ''))
+                self.logger.info(f"Reading local PDF from: {local_path}")
+                text = _read_local_pdf(local_path)
+                if text:
+                    return text
+        except Exception:
+            # Continue to other fallbacks
+            pass
+
+        # 2) If a local PDF directory is configured, look for a matching file there
+        try:
+            if self.pdf_local_dir is not None:
+                pdf_dir = Path(self.pdf_local_dir)
+                if pdf_dir.exists() and pdf_dir.is_dir():
+                    # Derive a candidate filename from the URL (last path segment)
+                    fname = os.path.basename((url or '').split('?')[0]) if url else ''
+                    candidates = []
+                    if fname:
+                        candidates.append(pdf_dir / fname)
+                        if not fname.lower().endswith('.pdf'):
+                            candidates.append(pdf_dir / (fname + '.pdf'))
+                        # Also try stem-based fuzzy match
+                        stem = os.path.splitext(fname)[0]
+                        if stem:
+                            for p in pdf_dir.iterdir():
+                                if p.is_file() and p.suffix.lower() == '.pdf' and stem.lower() in p.name.lower():
+                                    candidates.append(p)
+                    # If no fname or no candidates matched, attempt to take the first PDF that contains any part
+                    if not candidates:
+                        for p in pdf_dir.iterdir():
+                            if p.is_file() and p.suffix.lower() == '.pdf':
+                                candidates.append(p)
+
+                    # Try candidates in order
+                    for cand in candidates:
+                        if cand and cand.exists():
+                            self.logger.info(f"Attempting to load local PDF candidate: {cand}")
+                            text = _read_local_pdf(cand)
+                            if text:
+                                return text
+        except Exception as e:
+            self.logger.warning(f"Error while searching local PDF directory: {e}")
+
+        # 3) Fall back to fetching from URL (if requests available)
+        if not url:
+            return None
+
+        if requests is None:
+            self.logger.warning("requests not available; cannot fetch PDF from URL and no local PDF found")
+            return None
+
+        # Use a deterministic filename derived from the URL hash
+        try:
+            url_hash = hashlib.sha256(url.encode('utf-8')).hexdigest()
+            cache_path = os.path.join(cache_dir, f"{url_hash}.txt") if cache_dir else None
+        except Exception:
+            cache_path = None
+
+        # Return cached text if present (unless force_refresh requested)
+        if cache_path and not force_refresh and os.path.exists(cache_path):
+            try:
+                with open(cache_path, 'r', encoding='utf-8') as f:
+                    cached = f.read()
+                if cached:
+                    self.logger.info(f"Loaded PDF text from cache for URL: {url}")
+                    return cached
+            except Exception:
+                pass
+
+        try:
+            self.logger.info(f"Fetching PDF from URL: {url}")
+            resp = requests.get(url, timeout=timeout)
+            resp.raise_for_status()
+
+            bio = io.BytesIO(resp.content)
+            reader = PyPDF2.PdfReader(bio)
+            texts = []
+            for page in reader.pages:
+                try:
+                    page_text = page.extract_text() or ""
+                except Exception:
+                    page_text = ""
+                texts.append(page_text)
+
+            full_text = "\n\n".join([t for t in texts if t])
+            if full_text:
+                self.logger.info(f"Extracted {len(full_text)} characters from PDF")
+                # Save to cache if available
+                if cache_path:
+                    try:
+                        tmp_path = cache_path + ".tmp"
+                        with open(tmp_path, 'w', encoding='utf-8') as f:
+                            f.write(full_text)
+                        os.replace(tmp_path, cache_path)
+                        self.logger.info(f"Cached PDF text to: {cache_path}")
+                    except Exception as e:
+                        self.logger.warning(f"Failed to write PDF cache for {url}: {e}")
+                return full_text
+            else:
+                self.logger.warning("PDF parsed but no text was extracted")
+                return None
+
+        except Exception as e:
+            self.logger.warning(f"Failed to fetch/parse PDF at {url}: {e}")
+            return None
+
     def _generate_answer(self, question: str, context: str = None) -> str:
         """
-        Generate answer using HuggingFace LLM (Llama 3.2 3B or Qwen 2.5 7B)
-        
-        Args:
-            question: Question to answer
-            context: Context for answering (optional)
-            
-        Returns:
-            Generated answer
+        Generate answer using HuggingFace LLM (local pipeline or API fallback).
         """
-        # Initialize LLM if not already done
-        self._initialize_llm()
-        
+        # Ensure LLM is initialized (API or local)
+        if self.use_api and self.api_client is None:
+            self._initialize_llm()
+        elif not self.use_api and self.llm_pipeline is None:
+            self._initialize_llm()
+
         self.logger.info(f"\nGenerating answer for question: {question[:100]}...")
-        
-        # Format prompt based on model type
-        if "llama" in self.llm_model_name.lower():
-            # Llama 3.2 uses chat format
+
+        # Build prompts depending on model family
+        model_name = (self.llm_model_name or '').lower()
+        if 'llama' in model_name:
             if context:
-                prompt = f"""<|begin_of_text|><|start_header_id|>system<|end_header_id|>
-
-You are a helpful financial analyst assistant. Answer questions based on the provided context accurately and concisely.<|eot_id|><|start_header_id|>user<|end_header_id|>
-
-Context: {context}
-
-Question: {question}<|eot_id|><|start_header_id|>assistant<|end_header_id|>
-
-"""
+                prompt = (
+                    "<|begin_of_text|><|start_header_id|>system<|end_header_id|>\n\n"
+                    "You are a helpful financial analyst assistant. Answer questions based on the provided context accurately and concisely."
+                    "<|eot_id|><|start_header_id|>user<|end_header_id|>\n\n"
+                    f"Context: {context}\n\nQuestion: {question}<|eot_id|><|start_header_id|>assistant<|end_header_id|>\n"
+                )
             else:
-                prompt = f"""<|begin_of_text|><|start_header_id|>system<|end_header_id|>
+                prompt = (
+                    "<|begin_of_text|><|start_header_id|>system<|end_header_id|>\n\n"
+                    "You are a helpful financial analyst assistant. Answer questions accurately and concisely based on your knowledge."
+                    "<|eot_id|><|start_header_id|>user<|end_header_id|>\n\n"
+                    f"Question: {question}<|eot_id|><|start_header_id|>assistant<|end_header_id|>\n"
+                )
 
-You are a helpful financial analyst assistant. Answer questions accurately and concisely based on your knowledge.<|eot_id|><|start_header_id|>user<|end_header_id|>
-
-Question: {question}<|eot_id|><|start_header_id|>assistant<|end_header_id|>
-
-"""
-        
-        elif "qwen" in self.llm_model_name.lower():
-            # Qwen 2.5 uses a different chat format
+        elif 'qwen' in model_name:
             if context:
-                prompt = f"""<|im_start|>system
-You are a helpful financial analyst assistant. Answer questions based on the provided context accurately and concisely.<|im_end|>
-<|im_start|>user
-Context: {context}
-
-Question: {question}<|im_end|>
-<|im_start|>assistant
-"""
+                prompt = (
+                    "<|im_start|>system\n"
+                    "You are a helpful financial analyst assistant. Answer questions based on the provided context accurately and concisely.<|im_end|>\n"
+                    "<|im_start|>user\n"
+                    f"Context: {context}\n\nQuestion: {question}<|im_end|>\n"
+                    "<|im_start|>assistant\n"
+                )
             else:
-                prompt = f"""<|im_start|>system
-You are a helpful financial analyst assistant. Answer questions accurately and concisely based on your knowledge.<|im_end|>
-<|im_start|>user
-Question: {question}<|im_end|>
-<|im_start|>assistant
-"""
-        
+                prompt = (
+                    "<|im_start|>system\n"
+                    "You are a helpful financial analyst assistant. Answer questions accurately and concisely based on your knowledge.<|im_end|>\n"
+                    "<|im_start|>user\n"
+                    f"Question: {question}<|im_end|>\n"
+                    "<|im_start|>assistant\n"
+                )
+
         else:
-            # Generic format for other models
             if context:
                 prompt = f"Context: {context}\n\nQuestion: {question}\n\nAnswer:"
             else:
                 prompt = f"Question: {question}\n\nAnswer:"
-        
+
         if context:
             self.logger.info(f"Using context of length: {len(context)} chars")
-        
-        # If configured to use the OpenAI-style API (HF router), call it here
+
+        # If using API-based generation
         if self.use_api:
-            if self.api_client is None:
-                # Ensure client initialized (this will raise if missing config)
-                self._initialize_llm()
-
-            # Build a concise message for the chat API
-            if context:
-                message_content = f"Context: {context}\n\nQuestion: {question}"
-            else:
-                message_content = f"Question: {question}"
-
             try:
                 self.logger.info("Calling API-based LLM (chat completion)...")
+                message = f"Context: {context}\n\nQuestion: {question}" if context else f"Question: {question}"
                 completion = self.api_client.chat.completions.create(
                     model=self.llm_model_name,
-                    messages=[{"role": "user", "content": message_content}],
+                    messages=[{"role": "user", "content": message}],
                 )
-
-                # Extract text robustly
                 choice = completion.choices[0]
-                answer = None
-                # Try dict-style access
                 if isinstance(choice, dict):
                     msg = choice.get('message') or {}
                     answer = msg.get('content') or choice.get('text') or str(choice)
                 else:
-                    # object-style
                     msg = getattr(choice, 'message', None)
-                    if msg is not None and hasattr(msg, 'content'):
-                        answer = msg.content
-                    else:
-                        answer = getattr(choice, 'text', str(choice))
-
-                answer = (answer or '').strip()
-                self.logger.info(f"API-generated answer: {answer[:200]}...")
-                return answer
-
+                    answer = getattr(msg, 'content', None) or getattr(choice, 'text', None) or str(choice)
+                return (answer or '').strip()
             except Exception as e:
                 self.logger.error(f"API generation error: {e}")
                 return f"[API error generating answer: {e}]"
 
-        # Fallback to local pipeline generation
+        # Local pipeline generation
         try:
-            # Generate answer
-            self.logger.info("Generating response from LLM...")
+            self.logger.info("Generating response from local LLM pipeline...")
             response = self.llm_pipeline(
                 prompt,
                 max_new_tokens=self.max_new_tokens,
                 num_return_sequences=1,
                 pad_token_id=self.llm_tokenizer.eos_token_id
             )
-
-            # Extract generated text
-            answer = response[0]['generated_text'].strip()
-
-            # Clean up answer (remove special tokens if any leaked through)
+            answer = response[0].get('generated_text', '')
             answer = answer.replace("<|eot_id|>", "").replace("<|im_end|>", "").strip()
-
             self.logger.info(f"Generated answer: {answer[:200]}...")
-
             return answer
-
         except Exception as e:
             self.logger.error(f"Error generating answer: {str(e)}")
             return f"[Error generating answer: {str(e)}]"
     
     def run_closed_book(self, data: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
-        """
-        Run closed-book experiment (no retrieval)
-        
-        Args:
-            data: List of data samples
-            
-        Returns:
-            List of results
-        """
-        self.logger.info("\n" + "=" * 80)
-        self.logger.info("RUNNING CLOSED-BOOK EXPERIMENT")
-        self.logger.info("=" * 80)
-        
-        results = []
-        
-        for i, sample in enumerate(data):
-            self.logger.info(f"\n--- Sample {i+1}/{len(data)} ---")
-            
-            question = sample['question']
-            reference_answer = sample['answer']
-            
-            # Generate answer without context
-            generated_answer = self._generate_answer(question, context=None)
-            
-            # Evaluate generation
-            eval_results = self.evaluator.evaluate_generation(
-                generated_answer, 
-                reference_answer,
-                question
-            )
-            
-            result = {
-                'sample_id': i,
-                'question': question,
-                'reference_answer': reference_answer,
-                'generated_answer': generated_answer,
-                'generation_length': len(generated_answer),
-                'generation_evaluation': eval_results,
-                'experiment_type': self.CLOSED_BOOK
-            }
-            
-            results.append(result)
-            self.logger.info(f"Completed sample {i+1}")
-        
-        return results
+        # Delegate to modular closed-book runner
+        if _run_closed_book is None:
+            raise RuntimeError("Closed-book runner module not available")
+        return _run_closed_book(self, data)
     
     def run_single_vector(self, data: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
-        """
-        Run single vector store experiment (separate FAISS index per document)
-        
-        Args:
-            data: List of data samples
-            
-        Returns:
-            List of results
-        """
-        self.logger.info("\n" + "=" * 80)
-        self.logger.info("RUNNING SINGLE VECTOR STORE EXPERIMENT (LangChain + FAISS)")
-        self.logger.info("=" * 80)
-        
-        results = []
-        
-        # Group by document
-        doc_groups = defaultdict(list)
-        for sample in data:
-            doc_name = sample.get('doc_name', 'unknown')
-            doc_groups[doc_name].append(sample)
-        
-        self.logger.info(f"Processing {len(doc_groups)} unique documents")
-        
-        for doc_name, samples in doc_groups.items():
-            self.logger.info(f"\n{'='*80}")
-            self.logger.info(f"Document: {doc_name}")
-            self.logger.info(f"Samples: {len(samples)}")
-            self.logger.info(f"{'='*80}")
-            
-            # Get document content from first sample's evidence, coerce bytes to str
-            doc_content = samples[0].get('evidence', '')
-            if isinstance(doc_content, (bytes, bytearray)):
-                try:
-                    doc_content = doc_content.decode('utf-8')
-                except Exception:
-                    doc_content = doc_content.decode('utf-8', errors='replace')
-            
-            if not doc_content:
-                self.logger.warning(f"No content available for document: {doc_name}")
-                continue
-            
-            # Chunk document using LangChain
-            documents = self._chunk_text_langchain(
-                doc_content,
-                metadata={'doc_name': doc_name, 'source': 'evidence'}
-            )
-            
-            # Create FAISS vector store
-            vector_store = self._create_vector_store_faiss(documents, index_name=doc_name)
-            
-            # Process each sample
-            for i, sample in enumerate(samples):
-                self.logger.info(f"\n--- Sample {i+1}/{len(samples)} for {doc_name} ---")
-                
-                question = sample['question']
-                reference_answer = sample['answer']
-                gold_evidence = sample.get('evidence', '')
-                if isinstance(gold_evidence, (bytes, bytearray)):
-                    try:
-                        gold_evidence = gold_evidence.decode('utf-8')
-                    except Exception:
-                        gold_evidence = gold_evidence.decode('utf-8', errors='replace')
-                
-                # Retrieve relevant chunks using FAISS
-                retrieved_chunks = self._retrieve_chunks_faiss(question, vector_store)
-                
-                # Combine retrieved chunks into context
-                context = "\n\n".join([chunk['text'] for chunk in retrieved_chunks])
-                
-                # Evaluate retrieval
-                retrieved_texts = [chunk['text'] for chunk in retrieved_chunks]
-                retrieval_eval = self.evaluator.compute_retrieval_metrics(
-                    retrieved_texts, 
-                    gold_evidence
-                )
-                
-                # Generate answer with context
-                generated_answer = self._generate_answer(question, context)
-                
-                # Evaluate generation
-                generation_eval = self.evaluator.evaluate_generation(
-                    generated_answer,
-                    reference_answer,
-                    question
-                )
-                
-                result = {
-                    'sample_id': len(results),
-                    'doc_name': doc_name,
-                    'question': question,
-                    'reference_answer': reference_answer,
-                    'gold_evidence': gold_evidence,
-                    'retrieved_chunks': retrieved_chunks,
-                    'num_retrieved': len(retrieved_chunks),
-                    'context_length': len(context),
-                    'generated_answer': generated_answer,
-                    'generation_length': len(generated_answer),
-                    'retrieval_evaluation': retrieval_eval,
-                    'generation_evaluation': generation_eval,
-                    'experiment_type': self.SINGLE_VECTOR,
-                    'vector_store_type': 'FAISS'
-                }
-                
-                results.append(result)
-                self.logger.info(f"Completed sample {len(results)}")
-        
-        return results
+        # Delegate to modular single-vector runner
+        if _run_single_vector is None:
+            raise RuntimeError("Single-vector runner module not available")
+        return _run_single_vector(self, data)
     
     def run_shared_vector(self, data: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
-        """
-        Run shared vector store experiment (single FAISS index for all documents)
-        
-        Args:
-            data: List of data samples
-            
-        Returns:
-            List of results
-        """
-        self.logger.info("\n" + "=" * 80)
-        self.logger.info("RUNNING SHARED VECTOR STORE EXPERIMENT (LangChain + FAISS)")
-        self.logger.info("=" * 80)
-        
-        # Collect all unique document contents
-        unique_docs = {}
-        for sample in data:
-            doc_name = sample.get('doc_name', 'unknown')
-            if doc_name not in unique_docs:
-                unique_docs[doc_name] = sample.get('evidence', '')
-        
-        self.logger.info(f"Collected {len(unique_docs)} unique documents")
-        
-        # Chunk all documents using LangChain
-        all_documents = []
-        for doc_name, content in unique_docs.items():
-            if content:
-                self.logger.info(f"\nChunking document: {doc_name}")
-                docs = self._chunk_text_langchain(
-                    content,
-                    metadata={'doc_name': doc_name, 'source': 'evidence'}
-                )
-                all_documents.extend(docs)
-        
-        self.logger.info(f"\nTotal documents across all chunks: {len(all_documents)}")
-        
-        # Create shared FAISS vector store
-        self.logger.info("\nCreating shared FAISS vector store...")
-        shared_vector_store = self._create_vector_store_faiss(all_documents, index_name="shared_store")
-        
-        # Process each sample
-        results = []
-        for i, sample in enumerate(data):
-            self.logger.info(f"\n--- Sample {i+1}/{len(data)} ---")
-            
-            question = sample['question']
-            reference_answer = sample['answer']
-            gold_evidence = sample.get('evidence', '')
-            # Defensive: coerce bytes to str for gold evidence
-            if isinstance(gold_evidence, (bytes, bytearray)):
-                try:
-                    gold_evidence = gold_evidence.decode('utf-8')
-                except Exception:
-                    gold_evidence = gold_evidence.decode('utf-8', errors='replace')
-            doc_name = sample.get('doc_name', 'unknown')
-            
-            # Retrieve relevant chunks using FAISS
-            retrieved_chunks = self._retrieve_chunks_faiss(question, shared_vector_store)
-            
-            # Combine retrieved chunks into context
-            context = "\n\n".join([chunk['text'] for chunk in retrieved_chunks])
-            
-            # Log which documents chunks came from
-            source_docs = [chunk['metadata'].get('doc_name', 'unknown') for chunk in retrieved_chunks]
-            self.logger.info(f"Retrieved chunks from documents: {source_docs}")
-            
-            # Evaluate retrieval
-            retrieved_texts = [chunk['text'] for chunk in retrieved_chunks]
-            retrieval_eval = self.evaluator.compute_retrieval_metrics(
-                retrieved_texts,
-                gold_evidence
-            )
-            
-            # Generate answer with context
-            generated_answer = self._generate_answer(question, context)
-            
-            # Evaluate generation
-            generation_eval = self.evaluator.evaluate_generation(
-                generated_answer,
-                reference_answer,
-                question
-            )
-            
-            result = {
-                'sample_id': i,
-                'doc_name': doc_name,
-                'question': question,
-                'reference_answer': reference_answer,
-                'gold_evidence': gold_evidence,
-                'retrieved_chunks': retrieved_chunks,
-                'retrieved_from_docs': source_docs,
-                'num_retrieved': len(retrieved_chunks),
-                'context_length': len(context),
-                'generated_answer': generated_answer,
-                'generation_length': len(generated_answer),
-                'retrieval_evaluation': retrieval_eval,
-                'generation_evaluation': generation_eval,
-                'experiment_type': self.SHARED_VECTOR,
-                'vector_store_type': 'FAISS'
-            }
-            
-            results.append(result)
-            self.logger.info(f"Completed sample {i+1}")
-        
-        return results
+        # Delegate to modular shared-vector runner
+        if _run_shared_vector is None:
+            raise RuntimeError("Shared-vector runner module not available")
+        return _run_shared_vector(self, data)
     
     def run_open_book(self, data: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
-        """
-        Run open-book experiment (use gold evidence directly)
-        
-        Args:
-            data: List of data samples
-            
-        Returns:
-            List of results
-        """
-        self.logger.info("\n" + "=" * 80)
-        self.logger.info("RUNNING OPEN-BOOK EXPERIMENT (Gold Evidence)")
-        self.logger.info("=" * 80)
-        
-        results = []
-        
-        for i, sample in enumerate(data):
-            self.logger.info(f"\n--- Sample {i+1}/{len(data)} ---")
-            
-            question = sample['question']
-            reference_answer = sample['answer']
-            gold_evidence = sample.get('evidence', '')
-            # Defensive: coerce bytes to str for gold evidence
-            if isinstance(gold_evidence, (bytes, bytearray)):
-                try:
-                    gold_evidence = gold_evidence.decode('utf-8')
-                except Exception:
-                    gold_evidence = gold_evidence.decode('utf-8', errors='replace')
-
-            # Use gold evidence as context
-            context = gold_evidence
-            
-            self.logger.info(f"Using gold evidence as context (length: {len(context)} chars)")
-            
-            # Generate answer with gold evidence
-            generated_answer = self._generate_answer(question, context)
-            
-            # Evaluate generation (no retrieval evaluation since we use gold evidence)
-            generation_eval = self.evaluator.evaluate_generation(
-                generated_answer,
-                reference_answer,
-                question
-            )
-            
-            result = {
-                'sample_id': i,
-                'question': question,
-                'reference_answer': reference_answer,
-                'gold_evidence': gold_evidence,
-                'context_length': len(context),
-                'generated_answer': generated_answer,
-                'generation_length': len(generated_answer),
-                'generation_evaluation': generation_eval,
-                'experiment_type': self.OPEN_BOOK
-            }
-            
-            results.append(result)
-            self.logger.info(f"Completed sample {i+1}")
-        
-        return results
+        # Delegate to modular open-book runner
+        if _run_open_book is None:
+            raise RuntimeError("Open-book runner module not available")
+        return _run_open_book(self, data)
     
     def run_experiment(self, num_samples: int = None, sample_indices: List[int] = None):
         """
@@ -1164,13 +1238,29 @@ Question: {question}<|im_end|>
             self.logger.info(f"  Min: {np.min(context_lengths)} chars")
             self.logger.info(f"  Max: {np.max(context_lengths)} chars")
             
-            # Retrieval metrics
-            exact_matches = [r['retrieval_evaluation']['exact_match'] for r in self.results]
-            max_overlaps = [r['retrieval_evaluation']['max_token_overlap'] for r in self.results]
-            
+            # Retrieval metrics: be defensive — some results may be skipped or have missing fields
+            exact_matches = [
+                r.get('retrieval_evaluation', {}).get('exact_match')
+                for r in self.results
+            ]
+            exact_matches = [v for v in exact_matches if v is not None]
+
+            max_overlaps = [
+                r.get('retrieval_evaluation', {}).get('max_token_overlap')
+                for r in self.results
+            ]
+            max_overlaps = [v for v in max_overlaps if v is not None]
+
             self.logger.info(f"\nRetrieval Performance:")
-            self.logger.info(f"  Exact Match Rate: {np.mean(exact_matches):.2%}")
-            self.logger.info(f"  Mean Max Token Overlap: {np.mean(max_overlaps):.4f}")
+            if exact_matches:
+                self.logger.info(f"  Exact Match Rate: {np.mean(exact_matches):.2%}")
+            else:
+                self.logger.info("  Exact Match Rate: n/a (no retrieval evals present)")
+
+            if max_overlaps:
+                self.logger.info(f"  Mean Max Token Overlap: {np.mean(max_overlaps):.4f}")
+            else:
+                self.logger.info("  Mean Max Token Overlap: n/a (no retrieval evals present)")
         
         # Generation metrics
         bleu_4_scores = []
@@ -1264,6 +1354,7 @@ def main():
             experiment = RAGExperiment(
                 experiment_type=EXPERIMENT_TYPE,
                 llm_model=model_path,
+                pdf_local_dir=str(Path(__file__).resolve().parent / "pdfs"),
                 chunk_size=CHUNK_SIZE,
                 chunk_overlap=CHUNK_OVERLAP,
                 top_k=TOP_K,
